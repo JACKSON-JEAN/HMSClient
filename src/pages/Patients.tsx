@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Container from "../components/ui/Container";
 import PatientsNav from "../components/PatientsNav";
 import { CircleX, EllipsisVertical, Eye, Pencil } from "lucide-react";
+import { Link } from "react-router-dom";
 
 type MenuState = {
   row: number;
@@ -122,12 +123,13 @@ const Patients = () => {
           className="z-[9999] w-36 bg-white border rounded-sm shadow-lg text-sm"
           onClick={(e) => e.stopPropagation()}
         >
-          <button
+          <Link
+            to={`/patients/${123}`}
             className="w-full flex items-center gap-1 text-left px-3 py-2 border-b hover:bg-gray-100"
             onClick={() => setMenu(null)}
           >
             <Eye size={16}/> <span>View profile</span>
-          </button>
+          </Link>
           <button
             className="w-full flex items-center gap-1 text-left px-3 py-2 border-b text-green-600 hover:bg-gray-100"
             onClick={() => setMenu(null)}
