@@ -18,7 +18,7 @@ const lazyRetry = (importFn: () => Promise<any>) =>
 
 const Dashboard = lazy(() => import("../pages/Dashboard"));
 const Patients = lazy(() => import("../pages/Patients"));
-const PatientDetails = lazy(() => import("../pages/PatientDetails"))
+const PatientDetails = lazy(() => import("../pages/PatientDetails"));
 const MedicalRecords = lazy(() => import("../pages/MedicalRecords"));
 const Appointments = lazy(() => import("../pages/Appointments"));
 const Visits = lazy(() => import("../pages/Visits"));
@@ -68,31 +68,31 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
-    errorElement: <RouterError/>,
+    errorElement: <RouterError />,
     children: [
-      {index: true, element: withSuspense(Dashboard)},
-      {path: "signIn", element: withSuspense(SignIn)},
-      {path: "signUp", element: withSuspense(SignUp)},
+      { index: true, handle: {title: "dashboard"}, element: withSuspense(Dashboard) },
+      { path: "signIn", element: withSuspense(SignIn) },
+      { path: "signUp", element: withSuspense(SignUp) },
       {
-        path: "patients", 
+        path: "patients",
         children: [
-          {index: true, element: withSuspense(Patients)},
-          {path: ":patientId", element: withSuspense(PatientDetails)},
-        ]
+          { index: true, handle: {title: "patients"}, element: withSuspense(Patients) },
+          { path: ":patientId", handle: { title: "Patient Details" }, element: withSuspense(PatientDetails) },
+        ],
       },
-      {path: "medical-records", element: withSuspense(MedicalRecords)},
-      {path: "appointments", element: withSuspense(Appointments)},
-      {path: "visits", element: withSuspense(Visits)},
-      {path: "admissions", element: withSuspense(Admissions)},
-      {path: "laboratory", element: withSuspense(Laboratory)},
-      {path: "pharmacy", element: withSuspense(Pharmacy)},
-      {path: "billing", element: withSuspense(Billing)},
-      {path: "insurance", element: withSuspense(Insurance)},
-      {path: "inventory", element: withSuspense(Inventory)},
-      {path: "staff", element: withSuspense(Staff)},
-      {path: "departments", element: withSuspense(Departments)},
-      {path: "notifications", element: withSuspense(Notifications)},
+      { path: "medical-records", handle: {title: "medical records"}, element: withSuspense(MedicalRecords) },
+      { path: "appointments", handle: {title: "appointments"}, element: withSuspense(Appointments) },
+      { path: "visits", handle: {title: "visits"}, element: withSuspense(Visits) },
+      { path: "admissions", handle: {title: "admissions"}, element: withSuspense(Admissions) },
+      { path: "laboratory", handle: {title: "laboratory"}, element: withSuspense(Laboratory) },
+      { path: "pharmacy", handle: {title: "pharmacy"}, element: withSuspense(Pharmacy) },
+      { path: "billing", handle: {title: "billing & payments"}, element: withSuspense(Billing) },
+      { path: "insurance", handle: {title: "insurance"}, element: withSuspense(Insurance) },
+      { path: "inventory", handle: {title: "inventory"}, element: withSuspense(Inventory) },
+      { path: "staff", handle: {title: "staff"}, element: withSuspense(Staff) },
+      { path: "departments", handle: {title: "departments"}, element: withSuspense(Departments) },
+      { path: "notifications", handle: {title: "notifications"}, element: withSuspense(Notifications) },
       { path: "*", element: <NotFound /> },
-    ]
-  }
-])
+    ],
+  },
+]);

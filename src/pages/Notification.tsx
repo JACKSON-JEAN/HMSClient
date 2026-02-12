@@ -1,8 +1,11 @@
 import React from 'react'
+import Container from '../components/ui/Container'
 
 const Notification = () => {
   return (
-    <div>Notification</div>
+    <Container>
+      <div>Notification</div>
+    </Container>
   )
 }
 

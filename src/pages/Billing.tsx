@@ -1,8 +1,11 @@
 import React from 'react'
+import Container from '../components/ui/Container'
 
 const Billing = () => {
   return (
-    <div>Billing</div>
+    <Container>
+      <div>Billing</div>
+    </Container>
   )
 }
 

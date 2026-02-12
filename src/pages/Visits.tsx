@@ -1,8 +1,11 @@
 import React from 'react'
+import Container from '../components/ui/Container'
 
 const Visits = () => {
   return (
-    <div>Visits</div>
+    <Container>
+      <div>Visits</div>
+    </Container>
   )
 }
 

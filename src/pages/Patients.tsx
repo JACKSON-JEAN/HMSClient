@@ -118,7 +118,7 @@ const Patients = () => {
           style={{
             position: "fixed",
             top: menu.y - 40,
-            left: menu.x - 340,
+            right: 60,
           }}
           className="z-[9999] w-36 bg-white border rounded-sm shadow-lg text-sm"
           onClick={(e) => e.stopPropagation()}
