@@ -20,7 +20,7 @@ const Sidemenu: React.FC<Props> = ({ open, onClose }) => {
       )}
       <nav
         className={`
-  fixed inset-y-0 left-0 w-[200px]
+  fixed inset-y-0 left-0 w-[250px] md:w-[200px]
   bg-white h-screen border-r z-30
   transform transition-transform duration-300 ease-in-out
   ${open ? "translate-x-0" : "-translate-x-full"}

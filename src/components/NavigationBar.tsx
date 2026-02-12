@@ -10,7 +10,7 @@ type Props = {
 const NavigationBar: React.FC<Props> = ({ onMenuClick, title }) => {
   return (
     <nav className=" sticky top-0 z-10 h-[50px] bg-white w-full border-b flex items-center justify-between px-4">
-      <div className=" flex items-center gap-3">
+      <div className=" flex items-center gap-6">
         <button
           onClick={onMenuClick}
           className=" md:hidden flex justify-center items-center gap-1 rounded-sm hover:text-gray-600 text-black cursor-pointer"
