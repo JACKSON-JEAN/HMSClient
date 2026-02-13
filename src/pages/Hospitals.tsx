@@ -50,7 +50,7 @@ const Hospitals = () => {
               <tr className='border-b border-dashed border-gray-200'>
                 <th className="px-3 py-1 text-start">
                   <span className=' text-sm text-gray-500 whitespace-nowrap'>#</span>
-                  <div className=' w-7'>
+                  <div className=' w-5'>
                     <input type="text" className=' w-[100%] border rounded outline-blue-600 text-sm text-gray-600 p-0.5 font-normal'/>
                   </div>
                 </th>
