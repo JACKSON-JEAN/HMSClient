@@ -48,44 +48,89 @@ const Hospitals = () => {
           <table className="min-w-[900px] w-full border-collapse">
             <thead className="bg-slate-100 sticky top-0 z-10">
               <tr className='border-b border-dashed border-gray-200'>
-                <th className="px-3 py-1 text-sm text-gray-500 text-start whitespace-nowrap">
-                  #
+                <th className="px-3 py-1 text-start">
+                  <span className=' text-sm text-gray-500 whitespace-nowrap'>#</span>
+                  <div className=' w-7'>
+                    <input type="text" className=' w-[100%] border rounded outline-blue-600 text-sm text-gray-600 p-0.5 font-normal'/>
+                  </div>
                 </th>
-                <th className=" hidden sm:table-cell px-3 py-1 text-sm text-gray-500 text-start whitespace-nowrap">
-                  Code
+                <th className=" hidden sm:table-cell px-3 py-1 text-start">
+                  <span className=' text-sm text-gray-500 whitespace-nowrap'>Code</span>
+                  <div className=' w-20'>
+                    <input type="text" className=' w-[100%] border rounded outline-blue-600 text-sm text-gray-600 p-0.5 font-normal'/>
+                  </div>
                 </th>
-                <th className="px-3 py-1 text-sm text-gray-500 text-start whitespace-nowrap">
-                  Hospital Name
+                <th className="px-3 py-1 text-start">
+                  <span className=' text-sm text-gray-500 whitespace-nowrap'>Hospital Name</span>
+                  <div className=' w-32'>
+                    <input type="text" className=' w-[100%] border rounded outline-blue-600 text-sm text-gray-600 p-0.5 font-normal'/>
+                  </div>
                 </th>
-                <th className=" hidden sm:table-cell px-3 py-1 text-sm text-gray-500 text-start whitespace-nowrap">
-                  Type
+                <th className=" hidden sm:table-cell px-3 py-1 text-start">  
+                  <span className=' text-sm text-gray-500 whitespace-nowrap'>Type</span>
+                  <div className=' w-24'>
+                    <input type="text" className=' w-[100%] border rounded outline-blue-600 text-sm text-gray-600 p-0.5 font-normal'/>
+                  </div>
                 </th>
-                <th className=" hidden sm:table-cell px-3 py-1 text-sm text-gray-500 text-start whitespace-nowrap">
-                  Level
+                <th className=" hidden sm:table-cell px-3 py-1 text-start">
+                  <span className=' text-sm text-gray-500 whitespace-nowrap'>Level</span>
+                  <div className=' w-20'>
+                    <input type="text" className=' w-[100%] border rounded outline-blue-600 text-sm text-gray-600 p-0.5 font-normal'/>
+                  </div>
                 </th>
-                <th className="px-3 py-1 text-sm text-gray-500 text-start whitespace-nowrap">
-                  Country
+                <th className="px-3 py-1 text-start">
+                  <span className=' text-sm text-gray-500 whitespace-nowrap'>Country</span>
+                  <div className=' w-20'>
+                    <input type="text" className=' w-[100%] border rounded outline-blue-600 text-sm text-gray-600 p-0.5 font-normal'/>
+                  </div>
                 </th>
-                <th className=" px-3 py-1 text-sm text-gray-500 text-start whitespace-nowrap">
-                  City
+                <th className=" px-3 py-1 text-start">
+                  <span className=' text-sm text-gray-500 whitespace-nowrap'>City</span>
+                  <div className=' w-24'>
+                    <input type="text" className=' w-[100%] border rounded outline-blue-600 text-sm text-gray-600 p-0.5 font-normal'/>
+                  </div>
                 </th>
-                <th className=" px-3 py-1 text-sm text-gray-500 text-start whitespace-nowrap">
-                  Address
+                <th className=" px-3 py-1 text-start">
+                  
+                  <span className=' text-sm text-gray-500 whitespace-nowrap'>Address</span>
+                  <div className=' w-24'>
+                    <input type="text" className=' w-[100%] border rounded outline-blue-600 text-sm text-gray-600 p-0.5 font-normal'/>
+                  </div>
                 </th>
-                <th className=" px-3 py-1 text-sm text-gray-500 text-start whitespace-nowrap">
-                  Phone
+                <th className=" px-3 py-1 text-start">
+                  
+                  <span className=' text-sm text-gray-500 whitespace-nowrap'>Phone</span>
+                  <div className=' w-24'>
+                    <input type="text" className=' w-[100%] border rounded outline-blue-600 text-sm text-gray-600 p-0.5 font-normal'/>
+                  </div>
                 </th>
-                <th className=" px-3 py-1 text-sm text-gray-500 text-start whitespace-nowrap">
-                  Email
+                <th className=" px-3 py-1 text-start">
+                  
+                  <span className=' text-sm text-gray-500 whitespace-nowrap'>Email</span>
+                  <div className=' w-24'>
+                    <input type="text" className=' w-[100%] border rounded outline-blue-600 text-sm text-gray-600 p-0.5 font-normal'/>
+                  </div>
                 </th>
-                <th className=" hidden sm:table-cell px-3 py-1 text-sm text-gray-500 text-start whitespace-nowrap">
-                  License Number
+                <th className=" hidden sm:table-cell px-3 py-1 text-start">
+                  
+                  <span className=' text-sm text-gray-500 whitespace-nowrap'>License No</span>
+                  <div className=' w-24'>
+                    <input type="text" className=' w-[100%] border rounded outline-blue-600 text-sm text-gray-600 p-0.5 font-normal'/>
+                  </div>
                 </th>
-                <th className="px-3 py-1 text-sm text-gray-500 text-start whitespace-nowrap">
-                  Status
+                <th className="px-3 py-1 text-start">
+                  
+                  <span className=' text-sm text-gray-500 whitespace-nowrap'>Status</span>
+                  <div className=' w-24'>
+                    <input type="text" className=' w-[100%] border rounded outline-blue-600 text-sm text-gray-600 p-0.5 font-normal'/>
+                  </div>
                 </th>
-                <th className=" hidden sm:table-cell px-3 py-1 text-sm text-gray-500 text-start whitespace-nowrap">
-                  Date Enrolled
+                <th className=" hidden sm:table-cell px-3 py-1 text-start">
+                  
+                  <span className=' text-sm text-gray-500 whitespace-nowrap'>Date Enrolled</span>
+                  <div className=' w-24'>
+                    <input type="text" className=' w-[100%] border rounded outline-blue-600 text-sm text-gray-600 p-0.5 font-normal'/>
+                  </div>
                 </th>
 
                 {/* Sticky action header */}
