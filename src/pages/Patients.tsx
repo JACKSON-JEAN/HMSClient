@@ -44,7 +44,7 @@ const Patients = () => {
         <div className="w-full overflow-x-auto">
           <table className="min-w-[900px] w-full border-collapse">
             <thead className="bg-slate-100 sticky top-0 z-10">
-              <tr>
+              <tr className=" border-b border-dashed border-gray-200">
                 <th className="px-3 py-1 text-sm text-gray-500 text-start">
                   Patient ID
                 </th>
@@ -81,7 +81,7 @@ const Patients = () => {
               {[0, 1].map((row) => (
                 <tr
                   key={row}
-                  className="border-t border-dashed border-gray-200 even:bg-gray-50"
+                  className="border-b border-dashed border-gray-200 even:bg-gray-50"
                 >
                   <td className="px-3 py-1 text-sm">P-2534</td>
                   <td className="px-3 py-1 text-sm">John Doe</td>
@@ -117,7 +117,7 @@ const Patients = () => {
         <div
           style={{
             position: "fixed",
-            top: menu.y - 40,
+            top: menu.y - 65,
             right: 60,
           }}
           className="z-[9999] w-36 bg-white border rounded-sm shadow-lg text-sm"
@@ -125,7 +125,7 @@ const Patients = () => {
         >
           <Link
             to={`/patients/${123}`}
-            className="w-full flex items-center gap-1 text-left px-3 py-2 border-b hover:bg-gray-100"
+            className="w-full flex items-center gap-1 text-left px-3 py-2 border-b text-blue-600 hover:bg-gray-100"
             onClick={() => setMenu(null)}
           >
             <Eye size={16}/> <span>View profile</span>

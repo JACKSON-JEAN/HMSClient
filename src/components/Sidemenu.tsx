@@ -55,7 +55,7 @@ const Sidemenu: React.FC<Props> = ({ open, onClose }) => {
                   to={item.path}
                   key={item.path}
                   className={({ isActive }) =>
-                    `flex gap-1 items-center px-3 py-2 mb-2 rounded-sm font-medium cursor-pointer transition-colors duration-150 ease-in-out ${isActive ? "bg-slate-100 text-green-600" : " text-gray-700 hover:bg-slate-100 hover:text-green-600"}`
+                    `flex gap-1 items-center px-3 py-2 mb-2 rounded-sm font-medium cursor-pointer transition-colors duration-150 ease-in-out ${isActive ? "bg-black/5 text-green-600" : " text-gray-700 hover:bg-black/5 hover:text-green-600"}`
                   }
                 >
                   <Icon size={16} />

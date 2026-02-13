@@ -1,12 +1,17 @@
 import { ChevronDown, Plus, Search, SlidersHorizontal } from "lucide-react";
-import React from "react";
 import Button from "./ui/Button";
 
-const PatientsNav = () => {
+interface ListNavProps {
+  searchPlaceholder: string;
+  onAdd: () => void;
+  addLabel: string;
+}
+
+const ListNav = ({ searchPlaceholder, onAdd, addLabel }: ListNavProps) => {
   return (
-    <div className=" w-full mb-4 space-y-2 lg:space-y-0 lg:flex lg:items-center lg:justify-between">
-      {/* LEFT GROUP */}
-      <div className="space-y-2 md:space-y-0 md:flex md:items-center md:gap-4 w-full md:w-auto">
+    <div className="w-full mb-4 space-y-2 lg:flex lg:items-center lg:justify-between lg:space-y-0">
+      {/* LEFT */}
+      <div className="space-y-2 md:flex md:items-center md:gap-4 md:space-y-0 w-full md:w-auto">
         {/* Search */}
         <div className="relative w-full md:w-[300px]">
           <Search
@@ -15,12 +20,12 @@ const PatientsNav = () => {
           />
           <input
             type="text"
-            placeholder="Search patient..."
+            placeholder={searchPlaceholder}
             className="w-full text-sm text-gray-700 bg-white border border-gray-300 rounded-sm pl-7 pr-2 py-1.5 outline-blue-500"
           />
         </div>
 
-        {/* Mobile Row: Filters + Add */}
+        {/* Filters */}
         <div className="flex items-center justify-between gap-2 md:justify-start">
           <div className="flex gap-2">
             <button className="flex items-center gap-1 border border-gray-300 text-gray-600 px-2 py-1 rounded-sm hover:bg-gray-100">
@@ -33,10 +38,9 @@ const PatientsNav = () => {
               <ChevronDown size={16} />
             </button>
           </div>
-
           {/* Add Patient (mobile inline) */}
           <div className="md:hidden">
-            <Button onClick={() => console.log("Patient added")}>
+            <Button onClick={() => onAdd}>
               <span className="hidden sm:inline">All Status</span>
               <Plus size={17} />
             </Button>
@@ -44,15 +48,15 @@ const PatientsNav = () => {
         </div>
       </div>
 
-      {/* Add Patient (desktop position) */}
+      {/* ADD (desktop) */}
       <div className="hidden md:block">
-        <Button onClick={() => console.log("Patient added")}>
+        <Button onClick={onAdd}>
           <Plus size={17} />
-          <span>New Patient</span>
+          <span>{addLabel}</span>
         </Button>
       </div>
     </div>
   );
 };
 
-export default PatientsNav;
+export default ListNav;

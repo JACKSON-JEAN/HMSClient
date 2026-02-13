@@ -13,6 +13,7 @@ import {
   UserCog,
   Building2,
   Bell,
+  Hospital,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -50,9 +51,10 @@ export const menuConfig: MenuItem[] = [
   { type: "item", label: "Insurance", path: "/insurance", icon: ShieldCheck },
 
   { type: "section", section: "Administration" },
-  { type: "item", label: "Inventory", path: "/inventory", icon: Boxes },
-  { type: "item", label: "Staff", path: "/staff", icon: UserCog },
+  { type: "item", label: "Hospitals", path: "/hospitals", icon: Hospital },
   { type: "item", label: "Departments", path: "/departments", icon: Building2 },
+  { type: "item", label: "Staff", path: "/staff", icon: UserCog },
+  { type: "item", label: "Inventory", path: "/inventory", icon: Boxes },
 
   { type: "section", section: "System" },
   { type: "item", label: "Notifications", path: "/notifications", icon: Bell },
