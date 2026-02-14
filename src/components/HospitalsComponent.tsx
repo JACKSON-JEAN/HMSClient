@@ -36,21 +36,17 @@ export default function HospitalComponent() {
 
   // Close menu on outside click
   React.useEffect(() => {
-  const handleClickOutside = (e: MouseEvent) => {
-    if (!openFilter) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (!openFilter) return;
 
-    if (
-      filterRef.current &&
-      !filterRef.current.contains(e.target as Node)
-    ) {
-      setOpenFilter(null);
-    }
-  };
+      if (filterRef.current && !filterRef.current.contains(e.target as Node)) {
+        setOpenFilter(null);
+      }
+    };
 
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => document.removeEventListener("mousedown", handleClickOutside);
-}, [openFilter]);
-
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [openFilter]);
 
   //Toggle filter
   const toggleFilter = (key: FilterKey) => {
@@ -65,13 +61,12 @@ export default function HospitalComponent() {
     return () => window.removeEventListener("keydown", onEsc);
   }, []);
 
-
   // Close menu on outside click
-    React.useEffect(() => {
-      const closeMenu = () => setMenu(null);
-      window.addEventListener("click", closeMenu);
-      return () => window.removeEventListener("click", closeMenu);
-    }, []);
+  React.useEffect(() => {
+    const closeMenu = () => setMenu(null);
+    window.addEventListener("mousedown", closeMenu);
+    return () => window.removeEventListener("mousedown", closeMenu);
+  }, []);
 
   return (
     <>
@@ -79,6 +74,9 @@ export default function HospitalComponent() {
         <table className="min-w-[900px] w-full border-collapse">
           <thead className="bg-slate-100 sticky top-0 z-10">
             <tr className="border-b border-dashed border-gray-200">
+              <th className="px-1 py-1 text-start">
+                <input type="checkbox" className=" cursor-pointer"/>
+              </th>
               <th className="px-3 py-1 text-start">
                 <span className=" text-sm text-gray-500 whitespace-nowrap">
                   #
@@ -94,7 +92,10 @@ export default function HospitalComponent() {
                     Code
                   </span>
                   <span
-                    onClick={(e) => {e.stopPropagation(); toggleFilter("code")}}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFilter("code");
+                    }}
                     className={` cursor-pointer hover:text-blue-600 ${openFilter === "code" ? " text-blue-600" : "text-gray-500"}`}
                   >
                     <Funnel size={13} fontWeight="bold" />
@@ -122,7 +123,10 @@ export default function HospitalComponent() {
                     Hospital Name
                   </span>
                   <span
-                    onClick={(e) => {e.stopPropagation(); toggleFilter("name")}}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFilter("name");
+                    }}
                     className={` cursor-pointer hover:text-blue-600 ${openFilter === "name" ? " text-blue-600" : "text-gray-500"}`}
                   >
                     <Funnel size={13} fontWeight="bold" />
@@ -148,7 +152,10 @@ export default function HospitalComponent() {
                     Type
                   </span>
                   <span
-                    onClick={(e) =>{e.stopPropagation(); toggleFilter("type")}}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFilter("type");
+                    }}
                     className={` cursor-pointer hover:text-blue-600 ${openFilter === "type" ? " text-blue-600" : "text-gray-500"}`}
                   >
                     <Funnel size={13} fontWeight="bold" />
@@ -181,7 +188,10 @@ export default function HospitalComponent() {
                     Country
                   </span>
                   <span
-                    onClick={(e) =>{e.stopPropagation(); toggleFilter("country")}}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFilter("country");
+                    }}
                     className={` cursor-pointer hover:text-blue-600 ${openFilter === "country" ? " text-blue-600" : "text-gray-500"}`}
                   >
                     <Funnel size={13} fontWeight="bold" />
@@ -207,7 +217,10 @@ export default function HospitalComponent() {
                     City
                   </span>
                   <span
-                    onClick={(e) =>{e.stopPropagation(); toggleFilter("city")}}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFilter("city");
+                    }}
                     className={` cursor-pointer hover:text-blue-600 ${openFilter === "city" ? " text-blue-600" : "text-gray-500"}`}
                   >
                     <Funnel size={13} fontWeight="bold" />
@@ -249,7 +262,10 @@ export default function HospitalComponent() {
                     License No
                   </span>
                   <span
-                    onClick={(e) =>{e.stopPropagation(); toggleFilter("license")}}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFilter("license");
+                    }}
                     className={` cursor-pointer hover:text-blue-600 ${openFilter === "license" ? " text-blue-600" : "text-gray-500"}`}
                   >
                     <Funnel size={13} fontWeight="bold" />
@@ -275,7 +291,10 @@ export default function HospitalComponent() {
                     Status
                   </span>
                   <span
-                    onClick={(e) =>{e.stopPropagation(); toggleFilter("status")}}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFilter("status");
+                    }}
                     className={` cursor-pointer hover:text-blue-600 ${openFilter === "status" ? " text-blue-600" : "text-gray-500"}`}
                   >
                     <Funnel size={13} fontWeight="bold" />
@@ -311,7 +330,10 @@ export default function HospitalComponent() {
                     Date Enrolled
                   </span>
                   <span
-                    onClick={(e) =>{e.stopPropagation(); toggleFilter("date")}}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFilter("date");
+                    }}
                     className={` cursor-pointer hover:text-blue-600 ${openFilter === "date" ? " text-blue-600" : "text-gray-500"}`}
                   >
                     <Funnel size={13} fontWeight="bold" />
@@ -351,55 +373,68 @@ export default function HospitalComponent() {
           </thead>
 
           <tbody>
-            {[0, 1, 2, 3, 4, 5].map((row, index) => (
-              <tr
-                key={row}
-                className="border-b border-dashed border-gray-200 even:bg-gray-50"
-              >
-                <td className="px-3 py-1 text-sm whitespace-nowrap">
-                  {index + 1}
-                </td>
-                <td className=" px-3 py-1 text-sm whitespace-nowrap">
-                  HOSP2534
-                </td>
-                <td className="px-3 py-1 text-sm whitespace-nowrap">
-                  Holy Cross
-                </td>
-                <td className=" px-3 py-1 text-sm whitespace-nowrap">
-                  Faith-based
-                </td>
-                <td className="px-3 py-1 text-sm whitespace-nowrap">Uganda</td>
-                <td className=" px-3 py-1 text-sm whitespace-nowrap">
-                  Kampala
-                </td>
-                <td className=" px-3 py-1 text-sm whitespace-nowrap">
-                  Namungoona town
-                </td>
-                <td className="px-3 py-1 text-sm whitespace-nowrap">
-                  +256753792930
-                </td>
-                <td className="px-3 py-1 text-sm whitespace-nowrap">
-                  hcross@gmail.com
-                </td>
-                <td className=" px-3 py-1 text-sm whitespace-nowrap">
-                  DIT54634
-                </td>
-                <td className="px-3 py-1 text-sm whitespace-nowrap">Active</td>
-                <td className=" px-3 py-1 text-sm whitespace-nowrap">
-                  19.Oct.2023
-                </td>
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(
+              (row, index) => (
+                <tr
+                  key={row}
+                  className={`border-b border-dashed border-gray-200 ${menu?.row === row ? "bg-blue-100" : " even:bg-gray-50"}`}
+                >
+                  <td className="px-1 py-1 text-start">
+                    <input type="checkbox" className=" cursor-pointer"/>
+                  </td>
+                  <td className="px-3 py-1 text-sm whitespace-nowrap">
+                    {index + 1}
+                  </td>
+                  <td className=" px-3 py-1 text-sm whitespace-nowrap">
+                    HOSP2534
+                  </td>
+                  <td className="px-3 py-1 text-sm whitespace-nowrap">
+                    Holy Cross
+                  </td>
+                  <td className=" px-3 py-1 text-sm whitespace-nowrap">
+                    Faith-based
+                  </td>
+                  <td className="px-3 py-1 text-sm whitespace-nowrap">
+                    Uganda
+                  </td>
+                  <td className=" px-3 py-1 text-sm whitespace-nowrap">
+                    Kampala
+                  </td>
+                  <td className=" px-3 py-1 text-sm whitespace-nowrap">
+                    Namungoona town
+                  </td>
+                  <td className="px-3 py-1 text-sm whitespace-nowrap">
+                    +256753792930
+                  </td>
+                  <td className="px-3 py-1 text-sm whitespace-nowrap">
+                    hcross@gmail.com
+                  </td>
+                  <td className=" px-3 py-1 text-sm whitespace-nowrap">
+                    DIT54634
+                  </td>
+                  <td className="px-3 py-1 text-sm whitespace-nowrap">
+                    Active
+                  </td>
+                  <td className=" px-3 py-1 text-sm whitespace-nowrap">
+                    19.Oct.2023
+                  </td>
 
-                {/* Sticky action cell */}
-                <td className="sticky right-0 bg-white px-3 py-1 text-center whitespace-nowrap">
-                  <button
-                    onClick={(e) => openMenu(row, e)}
-                    className="text-gray-600 hover:text-black"
+                  {/* Sticky action cell */}
+                  <td
+                    className={`sticky right-0 px-3 py-1 text-center whitespace-nowrap
+    ${menu?.row === row ? "bg-blue-100" : "bg-white"}
+  `}
                   >
-                    <EllipsisVertical size={16} />
-                  </button>
-                </td>
-              </tr>
-            ))}
+                    <button
+                      onClick={(e) => openMenu(row, e)}
+                      className="text-gray-600 hover:text-black"
+                    >
+                      <EllipsisVertical size={16} />
+                    </button>
+                  </td>
+                </tr>
+              ),
+            )}
           </tbody>
         </table>
       </div>
@@ -416,7 +451,7 @@ export default function HospitalComponent() {
           onClick={(e) => e.stopPropagation()}
         >
           <button
-            className="w-full flex items-center gap-1 text-left px-3 py-2 border-b text-green-600 hover:bg-gray-100"
+            className="w-full flex items-center gap-1 text-left px-3 py-2 border-b text-green-600 hover:bg-green-50"
             onClick={() => setMenu(null)}
           >
             <Pencil size={16} /> <span>Edit Hospital</span>
