@@ -1,144 +1,434 @@
-import * as React from 'react';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
+import { CircleX, EllipsisVertical, Funnel, Pencil } from "lucide-react";
+import * as React from "react";
 
-interface Column {
-  id: 'name' | 'code' | 'population' | 'size' | 'density';
-  label: string;
-  minWidth?: number;
-  align?: 'right';
-  format?: (value: number) => string;
-}
+type MenuState = {
+  row: number;
+  x: number;
+  y: number;
+} | null;
 
-const columns: readonly Column[] = [
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
-  {
-    id: 'population',
-    label: 'Population',
-    minWidth: 170,
-    align: 'right',
-    format: (value: number) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'size',
-    label: 'Size\u00a0(km\u00b2)',
-    minWidth: 170,
-    align: 'right',
-    format: (value: number) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'density',
-    label: 'Density',
-    minWidth: 170,
-    align: 'right',
-    format: (value: number) => value.toFixed(2),
-  },
-];
-
-interface Data {
-  name: string;
-  code: string;
-  population: number;
-  size: number;
-  density: number;
-}
-
-function createData(
-  name: string,
-  code: string,
-  population: number,
-  size: number,
-): Data {
-  const density = population / size;
-  return { name, code, population, size, density };
-}
-
-const rows = [
-  createData('India', 'IN', 1324171354, 3287263),
-  createData('China', 'CN', 1403500365, 9596961),
-  createData('Italy', 'IT', 60483973, 301340),
-  createData('United States', 'US', 327167434, 9833520),
-  createData('Canada', 'CA', 37602103, 9984670),
-  createData('Australia', 'AU', 25475400, 7692024),
-  createData('Germany', 'DE', 83019200, 357578),
-  createData('Ireland', 'IE', 4857000, 70273),
-  createData('Mexico', 'MX', 126577691, 1972550),
-  createData('Japan', 'JP', 126317000, 377973),
-  createData('France', 'FR', 67022000, 640679),
-  createData('United Kingdom', 'GB', 67545757, 242495),
-  createData('Russia', 'RU', 146793744, 17098246),
-  createData('Nigeria', 'NG', 200962417, 923768),
-  createData('Brazil', 'BR', 210147125, 8515767),
-];
+type FilterKey =
+  | "code"
+  | "name"
+  | "type"
+  | "country"
+  | "city"
+  | "license"
+  | "status"
+  | "date";
 
 export default function HospitalComponent() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [menu, setMenu] = React.useState<MenuState>(null);
+  const [openFilter, setOpenFilter] = React.useState<FilterKey | null>(null);
+  const filterRef = React.useRef<HTMLDivElement | null>(null);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+  const openMenu = (row: number, e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+
+    const rect = e.currentTarget.getBoundingClientRect();
+
+    setMenu({
+      row,
+      x: rect.right,
+      y: rect.bottom,
+    });
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
+  // Close menu on outside click
+  React.useEffect(() => {
+  const handleClickOutside = (e: MouseEvent) => {
+    if (!openFilter) return;
+
+    if (
+      filterRef.current &&
+      !filterRef.current.contains(e.target as Node)
+    ) {
+      setOpenFilter(null);
+    }
   };
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, [openFilter]);
+
+
+  //Toggle filter
+  const toggleFilter = (key: FilterKey) => {
+    setOpenFilter((prev) => (prev === key ? null : key));
+  };
+
+  React.useEffect(() => {
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpenFilter(null);
+    };
+    window.addEventListener("keydown", onEsc);
+    return () => window.removeEventListener("keydown", onEsc);
+  }, []);
+
+
+  // Close menu on outside click
+    React.useEffect(() => {
+      const closeMenu = () => setMenu(null);
+      window.addEventListener("click", closeMenu);
+      return () => window.removeEventListener("click", closeMenu);
+    }, []);
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </Paper>
+    <>
+      <div className="w-full overflow-x-auto">
+        <table className="min-w-[900px] w-full border-collapse">
+          <thead className="bg-slate-100 sticky top-0 z-10">
+            <tr className="border-b border-dashed border-gray-200">
+              <th className="px-3 py-1 text-start">
+                <span className=" text-sm text-gray-500 whitespace-nowrap">
+                  #
+                </span>
+                <div className=" w-5">
+                  {/* <p>.</p>
+                    <input type="text" className=' w-[100%] border rounded outline-blue-600 text-sm text-gray-600 p-0.5 font-normal'/> */}
+                </div>
+              </th>
+              <th className=" relative px-3 py-1 text-start">
+                <div className=" flex items-center gap-3">
+                  <span className=" text-sm text-gray-500 whitespace-nowrap">
+                    Code
+                  </span>
+                  <span
+                    onClick={(e) => {e.stopPropagation(); toggleFilter("code")}}
+                    className={` cursor-pointer hover:text-blue-600 ${openFilter === "code" ? " text-blue-600" : "text-gray-500"}`}
+                  >
+                    <Funnel size={13} fontWeight="bold" />
+                  </span>
+                </div>
+                {openFilter === "code" && (
+                  <div
+                    ref={filterRef}
+                    onMouseDown={(e) => {
+                      e.stopPropagation();
+                    }}
+                    className=" bg-white border shadow-md rounded-sm p-2 absolute top-7 z-10"
+                  >
+                    <input
+                      type="text"
+                      className={`border rounded-sm outline-blue-600 text-sm text-gray-600 p-1 font-normal`}
+                      placeholder="Search code..."
+                    />
+                  </div>
+                )}
+              </th>
+              <th className=" relative px-3 py-1 text-start">
+                <div className=" flex items-center gap-3">
+                  <span className=" text-sm text-gray-500 whitespace-nowrap">
+                    Hospital Name
+                  </span>
+                  <span
+                    onClick={(e) => {e.stopPropagation(); toggleFilter("name")}}
+                    className={` cursor-pointer hover:text-blue-600 ${openFilter === "name" ? " text-blue-600" : "text-gray-500"}`}
+                  >
+                    <Funnel size={13} fontWeight="bold" />
+                  </span>
+                </div>
+                {openFilter === "name" && (
+                  <div
+                    ref={filterRef}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    className=" bg-white border shadow-md rounded-sm p-2 absolute top-7 z-10"
+                  >
+                    <input
+                      type="text"
+                      className=" border rounded-sm outline-blue-600 text-sm text-gray-600 p-1 font-normal"
+                      placeholder="Search name..."
+                    />
+                  </div>
+                )}
+              </th>
+              <th className=" relative px-3 py-1 text-start">
+                <div className=" flex items-center gap-3">
+                  <span className=" text-sm text-gray-500 whitespace-nowrap">
+                    Type
+                  </span>
+                  <span
+                    onClick={(e) =>{e.stopPropagation(); toggleFilter("type")}}
+                    className={` cursor-pointer hover:text-blue-600 ${openFilter === "type" ? " text-blue-600" : "text-gray-500"}`}
+                  >
+                    <Funnel size={13} fontWeight="bold" />
+                  </span>
+                </div>
+                {openFilter === "type" && (
+                  <div
+                    ref={filterRef}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    className=" bg-white border shadow-md rounded-sm absolute top-7 z-10"
+                  >
+                    <ul>
+                      <li className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5">
+                        Faith based
+                      </li>
+                      <li className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5">
+                        Public
+                      </li>
+                      <li className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5">
+                        Private
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </th>
+
+              <th className=" relative px-3 py-1 text-start">
+                <div className=" flex items-center gap-3">
+                  <span className=" text-sm text-gray-500 whitespace-nowrap">
+                    Country
+                  </span>
+                  <span
+                    onClick={(e) =>{e.stopPropagation(); toggleFilter("country")}}
+                    className={` cursor-pointer hover:text-blue-600 ${openFilter === "country" ? " text-blue-600" : "text-gray-500"}`}
+                  >
+                    <Funnel size={13} fontWeight="bold" />
+                  </span>
+                </div>
+                {openFilter === "country" && (
+                  <div
+                    ref={filterRef}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    className=" bg-white border shadow-md rounded-sm p-2 absolute top-7 z-10"
+                  >
+                    <input
+                      type="text"
+                      className=" border rounded-sm outline-blue-600 text-sm text-gray-600 p-1 font-normal"
+                      placeholder="Search country..."
+                    />
+                  </div>
+                )}
+              </th>
+              <th className=" relative px-3 py-1 text-start">
+                <div className=" flex items-center gap-3">
+                  <span className=" text-sm text-gray-500 whitespace-nowrap">
+                    City
+                  </span>
+                  <span
+                    onClick={(e) =>{e.stopPropagation(); toggleFilter("city")}}
+                    className={` cursor-pointer hover:text-blue-600 ${openFilter === "city" ? " text-blue-600" : "text-gray-500"}`}
+                  >
+                    <Funnel size={13} fontWeight="bold" />
+                  </span>
+                </div>
+                {openFilter === "city" && (
+                  <div
+                    ref={filterRef}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    className=" bg-white border shadow-md rounded-sm p-2 absolute top-7 z-10"
+                  >
+                    <input
+                      type="text"
+                      className=" border rounded-sm outline-blue-600 text-sm text-gray-600 p-1 font-normal"
+                      placeholder="Search city..."
+                    />
+                  </div>
+                )}
+              </th>
+              <th className=" px-3 py-1 text-start">
+                <span className=" text-sm text-gray-500 whitespace-nowrap">
+                  Address
+                </span>
+              </th>
+              <th className=" px-3 py-1 text-start">
+                <span className=" text-sm text-gray-500 whitespace-nowrap">
+                  Phone
+                </span>
+              </th>
+              <th className=" px-3 py-1 text-start">
+                <span className=" text-sm text-gray-500 whitespace-nowrap">
+                  Email
+                </span>
+              </th>
+
+              <th className=" relative px-3 py-1 text-start">
+                <div className=" flex items-center gap-3">
+                  <span className=" text-sm text-gray-500 whitespace-nowrap">
+                    License No
+                  </span>
+                  <span
+                    onClick={(e) =>{e.stopPropagation(); toggleFilter("license")}}
+                    className={` cursor-pointer hover:text-blue-600 ${openFilter === "license" ? " text-blue-600" : "text-gray-500"}`}
+                  >
+                    <Funnel size={13} fontWeight="bold" />
+                  </span>
+                </div>
+                {openFilter === "license" && (
+                  <div
+                    ref={filterRef}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    className=" bg-white border shadow-md rounded-sm p-2 absolute top-7 z-10"
+                  >
+                    <input
+                      type="text"
+                      className=" border rounded-sm outline-blue-600 text-sm text-gray-600 p-1 font-normal"
+                      placeholder="Search license..."
+                    />
+                  </div>
+                )}
+              </th>
+              <th className=" relative px-3 py-1 text-start">
+                <div className=" flex items-center gap-3">
+                  <span className=" text-sm text-gray-500 whitespace-nowrap">
+                    Status
+                  </span>
+                  <span
+                    onClick={(e) =>{e.stopPropagation(); toggleFilter("status")}}
+                    className={` cursor-pointer hover:text-blue-600 ${openFilter === "status" ? " text-blue-600" : "text-gray-500"}`}
+                  >
+                    <Funnel size={13} fontWeight="bold" />
+                  </span>
+                </div>
+                {openFilter === "status" && (
+                  <div
+                    ref={filterRef}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    className=" bg-white border shadow-md rounded-sm absolute top-7 z-10"
+                  >
+                    <ul>
+                      <li className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5">
+                        All
+                      </li>
+                      <li className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5">
+                        Active
+                      </li>
+                      <li className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5">
+                        Inactive
+                      </li>
+                      <li className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5">
+                        Suspended
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </th>
+
+              <th className=" relative px-3 py-1 text-start">
+                <div className=" flex items-center gap-3">
+                  <span className=" text-sm text-gray-500 whitespace-nowrap">
+                    Date Enrolled
+                  </span>
+                  <span
+                    onClick={(e) =>{e.stopPropagation(); toggleFilter("date")}}
+                    className={` cursor-pointer hover:text-blue-600 ${openFilter === "date" ? " text-blue-600" : "text-gray-500"}`}
+                  >
+                    <Funnel size={13} fontWeight="bold" />
+                  </span>
+                </div>
+                {openFilter === "date" && (
+                  <div
+                    ref={filterRef}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    className=" bg-white border shadow-md rounded-sm px-2 py-1 absolute top-7 z-10"
+                  >
+                    <label htmlFor="from" className="font-normal">
+                      From:
+                    </label>
+                    <input
+                      id="from"
+                      type="date"
+                      className=" border rounded-sm outline-blue-600 text-sm text-gray-600 p-1 font-normal"
+                    />
+                    <label htmlFor="to" className="font-normal">
+                      To:
+                    </label>
+                    <input
+                      id="to"
+                      type="date"
+                      className=" border rounded-sm outline-blue-600 text-sm text-gray-600 p-1 font-normal"
+                    />
+                  </div>
+                )}
+              </th>
+
+              {/* Sticky action header */}
+              <th className="sticky right-0 bg-slate-100 px-3 py-1 text-sm text-gray-500 text-center whitespace-nowrap">
+                Action
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {[0, 1, 2, 3, 4, 5].map((row, index) => (
+              <tr
+                key={row}
+                className="border-b border-dashed border-gray-200 even:bg-gray-50"
+              >
+                <td className="px-3 py-1 text-sm whitespace-nowrap">
+                  {index + 1}
+                </td>
+                <td className=" px-3 py-1 text-sm whitespace-nowrap">
+                  HOSP2534
+                </td>
+                <td className="px-3 py-1 text-sm whitespace-nowrap">
+                  Holy Cross
+                </td>
+                <td className=" px-3 py-1 text-sm whitespace-nowrap">
+                  Faith-based
+                </td>
+                <td className="px-3 py-1 text-sm whitespace-nowrap">Uganda</td>
+                <td className=" px-3 py-1 text-sm whitespace-nowrap">
+                  Kampala
+                </td>
+                <td className=" px-3 py-1 text-sm whitespace-nowrap">
+                  Namungoona town
+                </td>
+                <td className="px-3 py-1 text-sm whitespace-nowrap">
+                  +256753792930
+                </td>
+                <td className="px-3 py-1 text-sm whitespace-nowrap">
+                  hcross@gmail.com
+                </td>
+                <td className=" px-3 py-1 text-sm whitespace-nowrap">
+                  DIT54634
+                </td>
+                <td className="px-3 py-1 text-sm whitespace-nowrap">Active</td>
+                <td className=" px-3 py-1 text-sm whitespace-nowrap">
+                  19.Oct.2023
+                </td>
+
+                {/* Sticky action cell */}
+                <td className="sticky right-0 bg-white px-3 py-1 text-center whitespace-nowrap">
+                  <button
+                    onClick={(e) => openMenu(row, e)}
+                    className="text-gray-600 hover:text-black"
+                  >
+                    <EllipsisVertical size={16} />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* FLOATING DROPDOWN (OUTSIDE TABLE) */}
+      {menu && (
+        <div
+          style={{
+            position: "fixed",
+            top: menu.y - 65,
+            right: 50,
+          }}
+          className="z-[9999] w-36 bg-white border rounded-sm shadow-lg text-sm"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            className="w-full flex items-center gap-1 text-left px-3 py-2 border-b text-green-600 hover:bg-gray-100"
+            onClick={() => setMenu(null)}
+          >
+            <Pencil size={16} /> <span>Edit Hospital</span>
+          </button>
+          <button
+            className="w-full flex items-center gap-1 text-left px-3 py-2 text-red-600 hover:bg-red-50"
+            onClick={() => setMenu(null)}
+          >
+            <CircleX size={16} /> <span>Delete</span>
+          </button>
+        </div>
+      )}
+    </>
   );
 }
