@@ -1,5 +1,14 @@
-import { CircleX, EllipsisVertical, Funnel, Pencil } from "lucide-react";
+import {
+  CircleX,
+  EllipsisVertical,
+  Funnel,
+  Pencil,
+  Plus,
+  Search,
+} from "lucide-react";
+import Button from '@mui/material/Button';
 import * as React from "react";
+import HospitalsDownload from "./HospitalsDownload";
 
 type MenuState = {
   row: number;
@@ -69,13 +78,49 @@ export default function HospitalComponent() {
   }, []);
 
   return (
-    <>
+    <div className=" w-full">
+      <div className=" w-full mb-4 flex items-center gap-4 justify-between">
+        <div className="relative w-[300px]">
+          <Search
+            size={14}
+            className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500"
+          />
+          <input
+            type="text"
+            placeholder="Search anything..."
+            className="w-full text-sm text-gray-700 bg-white border border-gray-300 rounded-sm pl-7 pr-2 py-1.5 outline-blue-500"
+          />
+        </div>
+        <div className=" flex items-center gap-4">
+          {/* <div className=" relative">
+            <p className=" text-gray-600 text-sm whitespace-nowrap flex items-center gap-1 border shadow-sm rounded-sm py-1.5 px-3 cursor-pointer hover:bg-gray-50">
+              <span className=" hidden sm:block">Export</span>{" "}
+              <span>
+                <ArrowDownToLine size={18} />
+              </span>
+            </p>
+            <div className=" absolute top-9 z-20 bg-white block w-28 border shadow-lg">
+              <p className=" border-b text-gray-600 text-sm cursor-pointer hover:bg-gray-50 p-1.5 rounded-sm">
+                Export as CSV
+              </p>
+              <p className=" text-gray-600 text-sm cursor-pointer hover:bg-gray-50 p-1.5 rounded-sm">
+                Export as PDF
+              </p>
+            </div>
+          </div> */}
+          <HospitalsDownload />
+          <Button variant="contained">
+            <Plus size={21} />
+            <span className=" hidden sm:block">Hospital</span>
+          </Button>
+        </div>
+      </div>
       <div className="w-full overflow-x-auto">
         <table className="min-w-[900px] w-full border-collapse">
           <thead className="bg-slate-100 sticky top-0 z-10">
             <tr className="border-b border-dashed border-gray-200">
               <th className="px-1 py-1 text-start">
-                <input type="checkbox" className=" cursor-pointer"/>
+                <input type="checkbox" className=" cursor-pointer" />
               </th>
               <th className="px-3 py-1 text-start">
                 <span className=" text-sm text-gray-500 whitespace-nowrap">
@@ -380,7 +425,7 @@ export default function HospitalComponent() {
                   className={`border-b border-dashed border-gray-200 ${menu?.row === row ? "bg-blue-100" : " even:bg-gray-50"}`}
                 >
                   <td className="px-1 py-1 text-start">
-                    <input type="checkbox" className=" cursor-pointer"/>
+                    <input type="checkbox" className=" cursor-pointer" />
                   </td>
                   <td className="px-3 py-1 text-sm whitespace-nowrap">
                     {index + 1}
@@ -464,6 +509,6 @@ export default function HospitalComponent() {
           </button>
         </div>
       )}
-    </>
+    </div>
   );
 }
