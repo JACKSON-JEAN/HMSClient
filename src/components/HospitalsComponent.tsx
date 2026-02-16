@@ -83,38 +83,43 @@ export default function HospitalComponent({
     return () => window.removeEventListener("mousedown", closeMenu);
   }, []);
 
-  const hospitalData = React.useMemo(() => hospitals.filter((h) => {
-    const enrolledDate = h.enrolledAt ? new Date(h.enrolledAt) : null;
-    const fromDate = columnFilters.dateFrom ? new Date(columnFilters.dateFrom) : null;
-    const toDate  = columnFilters.dateTo ? new Date(columnFilters.dateTo) : null;
-    return (
-      (!search ||
-        Object.values(h).some((val) =>
-          val?.toString().toLowerCase().includes(search.toLowerCase()),
-        )) &&
-      (!columnFilters.code ||
-        h.code?.toLowerCase().includes(columnFilters.code.toLowerCase())) &&
-      (!columnFilters.name ||
-        h.name?.toLowerCase().includes(columnFilters.name.toLowerCase())) &&
-      (!columnFilters.type || h.type === columnFilters.type) &&
-      (!columnFilters.country ||
-        h.country
-          ?.toLowerCase()
-          .includes(columnFilters.country.toLowerCase())) &&
-      (!columnFilters.city ||
-        h.city?.toLowerCase().includes(columnFilters.city.toLowerCase())) &&
-      (!columnFilters.license ||
-        h.license
-          ?.toLowerCase()
-          .includes(columnFilters.license.toLowerCase())) &&
-      (!columnFilters.status || h.status === columnFilters.status) && 
-      (!fromDate || (enrolledDate && enrolledDate >= fromDate)) &&
-(!toDate   || (enrolledDate && enrolledDate <= toDate))
-
-    );
-  }),
-  [hospitals, columnFilters, search]
-)
+  const hospitalData = React.useMemo(
+    () =>
+      hospitals.filter((h) => {
+        const enrolledDate = h.enrolledAt ? new Date(h.enrolledAt) : null;
+        const fromDate = columnFilters.dateFrom
+          ? new Date(columnFilters.dateFrom)
+          : null;
+        const toDate = columnFilters.dateTo
+          ? new Date(columnFilters.dateTo)
+          : null;
+        return (
+          (!search ||
+            Object.values(h).some((val) =>
+              val?.toString().toLowerCase().includes(search.toLowerCase()),
+            )) &&
+          (!columnFilters.code ||
+            h.code?.toLowerCase().includes(columnFilters.code.toLowerCase())) &&
+          (!columnFilters.name ||
+            h.name?.toLowerCase().includes(columnFilters.name.toLowerCase())) &&
+          (!columnFilters.type || h.type === columnFilters.type) &&
+          (!columnFilters.country ||
+            h.country
+              ?.toLowerCase()
+              .includes(columnFilters.country.toLowerCase())) &&
+          (!columnFilters.city ||
+            h.city?.toLowerCase().includes(columnFilters.city.toLowerCase())) &&
+          (!columnFilters.license ||
+            h.license
+              ?.toLowerCase()
+              .includes(columnFilters.license.toLowerCase())) &&
+          (!columnFilters.status || h.status === columnFilters.status) &&
+          (!fromDate || (enrolledDate && enrolledDate >= fromDate)) &&
+          (!toDate || (enrolledDate && enrolledDate <= toDate))
+        );
+      }),
+    [hospitals, columnFilters, search],
+  );
 
   return (
     <div className=" w-full">

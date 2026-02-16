@@ -50,6 +50,6 @@ export const hospitals: Hospital[] = [
     email: "kfaisal@gmail.com",
     license: "DIT73538",
     status: "Inactive",
-    enrolledAt: "2025-3-28",
+    enrolledAt: "2025-03-28",
   },
 ];
