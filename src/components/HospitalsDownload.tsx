@@ -1,24 +1,47 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
-import { ArrowDownToLine } from 'lucide-react';
+// HospitalsDownload.tsx
+import * as React from "react";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import { ArrowDownToLine } from "lucide-react";
 
-export default function HospitalsDownload() {
+import { Hospital } from "./data/HospitalData";
+import { ExportToExcel } from "../utils/ExportToExcel";
+
+type Props = {
+  data: Hospital[];
+};
+
+export default function HospitalsDownload({ data }: Props) {
   return (
-    <PopupState variant="popover" popupId="demo-popup-menu">
+    <PopupState variant="popover" popupId="export-menu">
       {(popupState) => (
-        <React.Fragment>
-          <Button variant="contained" {...bindTrigger(popupState)}>
-            <span className=' mr-1'><ArrowDownToLine size={21} /></span>
-            <span className=' hidden sm:block'>Export</span>
+        <>
+          <Button
+            variant="contained"
+            {...bindTrigger(popupState)}
+            disabled={data.length === 0}
+          >
+            <span className="mr-1">
+              <ArrowDownToLine size={21} />
+            </span>
+            <span className="hidden sm:block">Export</span>
           </Button>
+
           <Menu {...bindMenu(popupState)}>
-            <MenuItem onClick={popupState.close}>Export as CSV</MenuItem>
-            <MenuItem onClick={popupState.close}>Export as PDF</MenuItem>
+            <MenuItem
+              onClick={() => {
+                ExportToExcel(data);
+                popupState.close();
+              }}
+            >
+              Export as Excel
+            </MenuItem>
+
+            <MenuItem disabled>Export as PDF</MenuItem>
           </Menu>
-        </React.Fragment>
+        </>
       )}
     </PopupState>
   );

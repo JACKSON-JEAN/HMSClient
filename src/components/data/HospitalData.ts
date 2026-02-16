@@ -1,4 +1,5 @@
 export type Hospital = {
+  id: string;
   code: string;
   name: string;
   type: string;
@@ -14,6 +15,7 @@ export type Hospital = {
 
 export const hospitals: Hospital[] = [
   {
+    id: "1",
     code: "HOSP2534",
     name: "Holy Cross",
     type: "Private",
@@ -27,6 +29,7 @@ export const hospitals: Hospital[] = [
     enrolledAt: "2023-10-19",
   },
   {
+    id: "2",
     code: "HOSP6342",
     name: "Orthodox",
     type: "Faith-based",
@@ -40,6 +43,7 @@ export const hospitals: Hospital[] = [
     enrolledAt: "2024-08-23",
   },
   {
+    id: "3",
     code: "HOSP9272",
     name: "King Faisal",
     type: "Public",

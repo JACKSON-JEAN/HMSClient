@@ -36,6 +36,7 @@ export default function HospitalComponent({
     dateTo?: string;
   };
   const [columnFilters, setColumnFilters] = React.useState<ColumnFilters>({});
+  const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
 
   const openMenu = (row: number, e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -121,6 +122,26 @@ export default function HospitalComponent({
     [hospitals, columnFilters, search],
   );
 
+  const toggleRow = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (selectedIds.size === hospitalData.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(hospitalData.map((h) => h.id)));
+    }
+  };
+
+  const exportData = React.useMemo(() => {
+    return hospitalData.filter((h) => selectedIds.has(h.id));
+  }, [hospitalData, selectedIds]);
+
   return (
     <div className=" w-full">
       {/* Hospital */}
@@ -130,7 +151,7 @@ export default function HospitalComponent({
         addLabel="Hospital"
         searchValue={search}
         onSearch={setSearch}
-        actions={<HospitalsDownload />}
+        actions={<HospitalsDownload data={exportData} />}
       />
 
       <div className="flex flex-wrap gap-2 mb-2">
@@ -170,7 +191,14 @@ export default function HospitalComponent({
           <thead className="bg-slate-100 sticky top-0 z-10">
             <tr className="border-b border-dashed border-gray-200">
               <th className="px-1 py-1 text-start">
-                <input type="checkbox" className=" cursor-pointer" />
+                <input
+                  type="checkbox"
+                  checked={
+                    hospitalData.length > 0 &&
+                    selectedIds.size === hospitalData.length
+                  }
+                  onChange={toggleAll}
+                />
               </th>
               <th className="px-3 py-1 text-start">
                 <span className=" text-sm text-gray-500 whitespace-nowrap">
@@ -569,7 +597,12 @@ export default function HospitalComponent({
                   className={`border-b border-dashed border-gray-200 ${menu?.row === index ? "bg-blue-100" : " even:bg-gray-50"}`}
                 >
                   <td className="px-1 py-1 text-start">
-                    <input type="checkbox" className=" cursor-pointer" />
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(hospital.id)}
+                      onChange={() => toggleRow(hospital.id)}
+                      className="cursor-pointer"
+                    />
                   </td>
                   <td className="px-3 py-1 text-sm whitespace-nowrap">
                     {index + 1}
@@ -601,7 +634,9 @@ export default function HospitalComponent({
                   <td className=" px-3 py-1 text-sm whitespace-nowrap">
                     {hospital.license}
                   </td>
-                  <td className="px-3 py-1 text-sm whitespace-nowrap">
+                  <td
+                    className={`px-3 py-1 text-sm whitespace-nowrap font-medium ${hospital.status === "Active" ? "text-green-600" : hospital.status === "Inactive" ? "text-red-600" : "text-black"}`}
+                  >
                     {hospital.status}
                   </td>
                   <td className=" px-3 py-1 text-sm whitespace-nowrap">
