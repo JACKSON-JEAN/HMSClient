@@ -1,4 +1,9 @@
-import { CircleX, EllipsisVertical, Funnel, Pencil } from "lucide-react";
+import {
+  CircleX,
+  EllipsisVertical,
+  Funnel,
+  Pencil,
+} from "lucide-react";
 import * as React from "react";
 import { Hospital } from "./data/HospitalData";
 import NavList from "./NavList";
@@ -306,34 +311,37 @@ export default function HospitalComponent({
                   >
                     <ul>
                       <li
-                        onClick={() =>
+                        onClick={() => {
                           setColumnFilters((prev) => ({
                             ...prev,
-                            type: "Faith based",
-                          }))
-                        }
+                            type: "Faith-based",
+                          }));
+                          setOpenFilter(null);
+                        }}
                         className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5"
                       >
                         Faith based
                       </li>
                       <li
-                        onClick={() =>
+                        onClick={() => {
                           setColumnFilters((prev) => ({
                             ...prev,
                             type: "Public",
-                          }))
-                        }
+                          }));
+                          setOpenFilter(null);
+                        }}
                         className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5"
                       >
                         Public
                       </li>
                       <li
-                        onClick={() =>
+                        onClick={() => {
                           setColumnFilters((prev) => ({
                             ...prev,
                             type: "Private",
-                          }))
-                        }
+                          }));
+                          setOpenFilter(null);
+                        }}
                         className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5"
                       >
                         Private
@@ -490,34 +498,37 @@ export default function HospitalComponent({
                   >
                     <ul>
                       <li
-                        onClick={() =>
+                        onClick={() => {
                           setColumnFilters((prev) => ({
                             ...prev,
                             status: "Active",
-                          }))
-                        }
+                          }));
+                          setOpenFilter(null);
+                        }}
                         className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5"
                       >
                         Active
                       </li>
                       <li
-                        onClick={() =>
+                        onClick={() => {
                           setColumnFilters((prev) => ({
                             ...prev,
                             status: "Inactive",
-                          }))
-                        }
+                          }));
+                          setOpenFilter(null);
+                        }}
                         className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5"
                       >
                         Inactive
                       </li>
                       <li
-                        onClick={() =>
+                        onClick={() => {
                           setColumnFilters((prev) => ({
                             ...prev,
                             status: "Suspended",
-                          }))
-                        }
+                          }));
+                          setOpenFilter(null);
+                        }}
                         className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5"
                       >
                         Suspended
@@ -555,14 +566,21 @@ export default function HospitalComponent({
                       id="from"
                       type="date"
                       value={columnFilters.dateFrom || ""}
-                      onChange={(e) =>
-                        setColumnFilters((prev) => ({
-                          ...prev,
-                          dateFrom: e.target.value,
-                        }))
-                      }
-                      className=" border rounded-sm outline-blue-600 text-sm text-gray-600 p-1 font-normal"
+                      onChange={(e) => {
+                        setColumnFilters((prev) => {
+                          const next = { ...prev, dateFrom: e.target.value };
+
+                          // If "To" is earlier than new "From", clear it
+                          if (next.dateTo && next.dateTo < next.dateFrom) {
+                            next.dateTo = "";
+                          }
+
+                          return next;
+                        });
+                      }}
+                      className="border rounded-sm outline-blue-600 text-sm text-gray-600 p-1 font-normal"
                     />
+
                     <label htmlFor="to" className="font-normal">
                       To:
                     </label>
@@ -570,12 +588,14 @@ export default function HospitalComponent({
                       id="to"
                       type="date"
                       value={columnFilters.dateTo || ""}
-                      onChange={(e) =>
-                        setColumnFilters((prev) => ({
-                          ...prev,
-                          dateTo: e.target.value,
-                        }))
-                      }
+                      min={columnFilters.dateFrom || undefined}
+                      onChange={(e) => {
+                        setColumnFilters((prev) => {
+                          const next = { ...prev, dateTo: e.target.value };
+                          if (next.dateFrom && next.dateTo) setOpenFilter(null);
+                          return next;
+                        });
+                      }}
                       className=" border rounded-sm outline-blue-600 text-sm text-gray-600 p-1 font-normal"
                     />
                   </div>
@@ -591,73 +611,80 @@ export default function HospitalComponent({
 
           {hospitalData.length >= 1 && (
             <tbody>
-              {hospitalData.map((hospital, index) => (
-                <tr
-                  key={index}
-                  className={`border-b border-dashed border-gray-200 ${menu?.row === index ? "bg-blue-100" : " even:bg-gray-50"}`}
-                >
-                  <td className="px-1 py-1 text-start">
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.has(hospital.id)}
-                      onChange={() => toggleRow(hospital.id)}
-                      className="cursor-pointer"
-                    />
-                  </td>
-                  <td className="px-3 py-1 text-sm whitespace-nowrap">
-                    {index + 1}
-                  </td>
-                  <td className=" px-3 py-1 text-sm whitespace-nowrap">
-                    {hospital.code}
-                  </td>
-                  <td className="px-3 py-1 text-sm whitespace-nowrap">
-                    {hospital.name}
-                  </td>
-                  <td className=" px-3 py-1 text-sm whitespace-nowrap">
-                    {hospital.type}
-                  </td>
-                  <td className="px-3 py-1 text-sm whitespace-nowrap">
-                    {hospital.country}
-                  </td>
-                  <td className=" px-3 py-1 text-sm whitespace-nowrap">
-                    {hospital.city}
-                  </td>
-                  <td className=" px-3 py-1 text-sm whitespace-nowrap">
-                    {hospital.address}
-                  </td>
-                  <td className="px-3 py-1 text-sm whitespace-nowrap">
-                    {hospital.phone}
-                  </td>
-                  <td className="px-3 py-1 text-sm whitespace-nowrap">
-                    {hospital.email}
-                  </td>
-                  <td className=" px-3 py-1 text-sm whitespace-nowrap">
-                    {hospital.license}
-                  </td>
-                  <td
-                    className={`px-3 py-1 text-sm whitespace-nowrap font-medium ${hospital.status === "Active" ? "text-green-600" : hospital.status === "Inactive" ? "text-red-600" : "text-black"}`}
+              {hospitalData.map((hospital, index) => {
+                const isSelected = selectedIds.has(hospital.id);
+                const isEven = index % 2 === 1;
+                const isHighlighted = isSelected || menu?.row === index;
+                return (
+                  <tr
+                    key={index}
+                    className={`border-b border-dashed border-gray-200 ${isHighlighted ? "bg-blue-50" : isEven ? "bg-gray-50" : ""}
+                  `}
                   >
-                    {hospital.status}
-                  </td>
-                  <td className=" px-3 py-1 text-sm whitespace-nowrap">
-                    {hospital.enrolledAt}
-                  </td>
+                    <td className="px-1 py-1 text-start">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.has(hospital.id)}
+                        onChange={() => toggleRow(hospital.id)}
+                        className="cursor-pointer"
+                      />
+                    </td>
+                    <td className="px-3 py-1 text-sm whitespace-nowrap">
+                      {index + 1}
+                    </td>
+                    <td className=" px-3 py-1 text-sm whitespace-nowrap">
+                      {hospital.code}
+                    </td>
+                    <td className="px-3 py-1 text-sm whitespace-nowrap">
+                      {hospital.name}
+                    </td>
+                    <td className=" px-3 py-1 text-sm whitespace-nowrap">
+                      {hospital.type}
+                    </td>
+                    <td className="px-3 py-1 text-sm whitespace-nowrap">
+                      {hospital.country}
+                    </td>
+                    <td className=" px-3 py-1 text-sm whitespace-nowrap">
+                      {hospital.city}
+                    </td>
+                    <td className=" px-3 py-1 text-sm whitespace-nowrap">
+                      {hospital.address}
+                    </td>
+                    <td className="px-3 py-1 text-sm whitespace-nowrap">
+                      {hospital.phone}
+                    </td>
+                    <td className="px-3 py-1 text-sm whitespace-nowrap">
+                      {hospital.email}
+                    </td>
+                    <td className=" px-3 py-1 text-sm whitespace-nowrap">
+                      {hospital.license}
+                    </td>
+                    <td className={`px-3 py-1 whitespace-nowrap`}>
+                      <span
+                        className={`text-xs font-medium border rounded-full px-2 py-0.5 ${hospital.status === "Active" ? "text-green-600 bg-green-100 border-green-500 " : hospital.status === "Inactive" ? "text-black bg-gray-200 border-black" : "text-red-700 bg-red-100 border-red-600"}`}
+                      >
+                        {hospital.status}
+                      </span>
+                    </td>
+                    <td className=" px-3 py-1 text-sm whitespace-nowrap">
+                      {hospital.enrolledAt}
+                    </td>
 
-                  {/* Sticky action cell */}
-                  <td
-                    className={`sticky right-0 px-3 py-1 text-center whitespace-nowrap
-    ${menu?.row === index ? "bg-blue-100" : "bg-white"}
+                    {/* Sticky action cell */}
+                    <td
+                      className={`sticky right-0 px-3 py-1 text-center whitespace-nowrap ${isHighlighted ? "bg-blue-50" : isEven ? "bg-gray-50" : " bg-white"}
   `}
-                  >
-                    <button
-                      onClick={(e) => openMenu(index, e)}
-                      className="text-gray-600 hover:text-black"
                     >
-                      <EllipsisVertical size={16} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                      <button
+                        onClick={(e) => openMenu(index, e)}
+                        className="text-gray-600 hover:text-black"
+                      >
+                        <EllipsisVertical size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           )}
         </table>

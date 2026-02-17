@@ -1,21 +1,26 @@
+// utils/ExportToExcel.ts
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { Hospital } from "../components/data/HospitalData";
+import { HOSPITAL_EXPORT_COLUMNS, HospitalExportKey } from "../config/exportColumns";
+// import { HOSPITAL_EXPORT_COLUMNS, HospitalExportKey } from "../components/exportColumns";
 
-export const ExportToExcel = (data: Hospital[]) => {
-  const formatted = data.map((h, index) => ({
-    Code: h.code,
-    Name: h.name,
-    Type: h.type,
-    Country: h.country,
-    City: h.city,
-    Address: h.address,
-    Phone: h.phone,
-    Email: h.email,
-    "License No": h.license,
-    Status: h.status,
-    "Date Enrolled": h.enrolledAt,
-  }));
+export const ExportToExcel = (
+  data: Hospital[],
+  selectedColumns: HospitalExportKey[],
+) => {
+  const formatted = data.map((row) => {
+    const obj: Record<string, any> = {};
+
+    selectedColumns.forEach((key) => {
+      const column = HOSPITAL_EXPORT_COLUMNS.find((c) => c.key === key);
+      if (column) {
+        obj[column.label] = row[key];
+      }
+    });
+
+    return obj;
+  });
 
   const worksheet = XLSX.utils.json_to_sheet(formatted);
   const workbook = XLSX.utils.book_new();
@@ -27,11 +32,11 @@ export const ExportToExcel = (data: Hospital[]) => {
     type: "array",
   });
 
-  const file = new Blob([excelBuffer], {
-    type:
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  });
-
-  saveAs(file, "hospitals.xlsx");
+  saveAs(
+    new Blob([excelBuffer], {
+      type:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    }),
+    "hospitals.xlsx",
+  );
 };
-

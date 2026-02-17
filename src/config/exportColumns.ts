@@ -12,3 +12,6 @@ export const HOSPITAL_EXPORT_COLUMNS = [
   { key: "status", label: "Status" },
   { key: "enrolledAt", label: "Date Enrolled" },
 ] as const;
+
+export type HospitalExportKey =
+  typeof HOSPITAL_EXPORT_COLUMNS[number]["key"];
