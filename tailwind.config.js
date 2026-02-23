@@ -4,7 +4,12 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ["Quicksand", "ui-sans-serif", "system-ui"],
+        quicksand: ["Quicksand", "sans-serif"],
+      },
+    },
   },
   plugins: [],
 }

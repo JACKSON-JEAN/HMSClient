@@ -30,7 +30,7 @@ const NavList = ({ searchPlaceholder, onAdd, addLabel, onSearch, searchValue, ac
       </div>
       <div className=" flex items-center gap-4">
         {actions}
-        <Button size="medium" onClick={onAdd} variant="contained">
+        <Button size="small" onClick={onAdd} variant="contained">
           <Plus size={21} />
           <span className=" hidden sm:block">{addLabel}</span>
         </Button>

@@ -18,6 +18,7 @@ const NavigationBar: React.FC<Props> = ({ onMenuClick, title }) => {
           <Menu size={16} />
         </button>
         <p className="font-semibold capitalize whitespace-nowrap text-lg">{title}</p>
+        {/* <Typography variant="h6" textTransform="capitalize">{title}</Typography> */}
       </div>
       <section className=" flex items-center gap-5">
         <Link

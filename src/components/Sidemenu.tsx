@@ -19,7 +19,7 @@ const Sidemenu: React.FC<Props> = ({ open, onClose }) => {
         />
       )}
       <nav
-        className={`
+        className={` font-sans
   fixed inset-y-0 left-0 w-[250px] md:w-[200px]
   bg-white h-screen border-r z-30
   transform transition-transform duration-300 ease-in-out
@@ -55,7 +55,7 @@ const Sidemenu: React.FC<Props> = ({ open, onClose }) => {
                   to={item.path}
                   key={item.path}
                   className={({ isActive }) =>
-                    `flex gap-1 items-center px-3 py-2 mb-2 rounded-sm font-medium cursor-pointer transition-colors duration-150 ease-in-out ${isActive ? "bg-black/5 text-green-600" : " text-gray-700 hover:bg-black/5 hover:text-green-600"}`
+                    `flex gap-1 items-center px-3 py-2 mb-2 rounded-sm font-medium cursor-pointer transition-colors duration-150 ease-in-out whitespace-nowrap ${isActive ? "bg-black/5 text-green-600" : " text-gray-700 hover:bg-black/5 hover:text-green-600"}`
                   }
                 >
                   <Icon size={16} />
