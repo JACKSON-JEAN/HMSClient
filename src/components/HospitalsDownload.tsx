@@ -1,5 +1,5 @@
 import * as React from "react";
-import Button from "@mui/material/Button";
+import Button from "./ui/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Checkbox from "@mui/material/Checkbox";
@@ -41,17 +41,22 @@ export default function HospitalsDownload({ data }: Props) {
       {(popupState) => (
         <>
           <Button
-            variant="contained"
+            className={`${data.length === 0 && " bg-gray-400 hover:bg-gray-300"}`}
             {...bindTrigger(popupState)}
             disabled={data.length === 0}
           >
-            <ArrowDownToLine size={21} className="mr-1" />
-            <span className="hidden sm:block">Export</span>
+            <ArrowDownToLine size={23} />
+            <span className={`hidden sm:block capitalize`}>Export</span>
           </Button>
 
-          <Menu {...bindMenu(popupState)} sx={{ p: 1 }}>
-            <MenuItem disableRipple onClick={(e) => e.stopPropagation()}>
+          <Menu sx={{p: 1}} {...bindMenu(popupState)}>
+            <MenuItem
+              sx={{ py: 0, fontFamily: '"Quicksand", ui-sans-serif, system-ui', }}
+              disableRipple
+              onClick={(e) => e.stopPropagation()}
+            >
               <Checkbox
+               
                 checked={
                   selectedColumns.length === HOSPITAL_EXPORT_COLUMNS.length
                 }
@@ -63,10 +68,12 @@ export default function HospitalsDownload({ data }: Props) {
             {HOSPITAL_EXPORT_COLUMNS.map((col) => (
               <MenuItem
                 key={col.key}
+                sx={{ py: 0, fontFamily: '"Quicksand", ui-sans-serif, system-ui', }}
                 disableRipple
                 onClick={(e) => e.stopPropagation()}
               >
                 <Checkbox
+                
                   checked={selectedColumns.includes(col.key)}
                   onChange={() => toggleColumn(col.key)}
                 />
@@ -75,6 +82,7 @@ export default function HospitalsDownload({ data }: Props) {
             ))}
 
             <MenuItem
+              sx={{fontFamily: '"Quicksand", ui-sans-serif, system-ui',}}
               disabled={selectedColumns.length === 0}
               onClick={() => {
                 ExportToExcel(data, selectedColumns);
@@ -84,7 +92,7 @@ export default function HospitalsDownload({ data }: Props) {
               Export as Excel
             </MenuItem>
 
-            <MenuItem disabled>Export as PDF</MenuItem>
+            <MenuItem sx={{fontFamily: '"Quicksand", ui-sans-serif, system-ui',}} disabled>Export as PDF</MenuItem>
           </Menu>
         </>
       )}

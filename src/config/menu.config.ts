@@ -1,7 +1,6 @@
 import {
   LayoutDashboard,
   Users,
-  FileText,
   CalendarClock,
   Stethoscope,
   Bed,
@@ -37,7 +36,6 @@ export const menuConfig: MenuItem[] = [
 
   { type: "section", section: "Clinical" },
   { type: "item", label: "Patients", path: "/patients", icon: Users },
-  { type: "item", label: "Medical Records", path: "/medical-records", icon: FileText },
   { type: "item", label: "Appointments", path: "/appointments", icon: CalendarClock },
   { type: "item", label: "Visits", path: "/visits", icon: Stethoscope },
   { type: "item", label: "Admissions", path: "/admissions", icon: Bed },

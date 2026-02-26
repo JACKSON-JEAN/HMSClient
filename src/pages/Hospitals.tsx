@@ -5,7 +5,7 @@ import { hospitals } from "../components/data/HospitalData";
 const Hospitals = () => {
   return (
     <Container>
-      <div className="w-full bg-white p-4 border rounded-sm">
+      <div className="w-full">
         <HospitalComponent hospitals={hospitals}/>
       </div>
     </Container>

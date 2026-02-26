@@ -1,4 +1,5 @@
 import {
+  ChevronLeft,
   CircleX,
   EllipsisVertical,
   Funnel,
@@ -8,6 +9,7 @@ import * as React from "react";
 import { Hospital } from "./data/HospitalData";
 import NavList from "./NavList";
 import HospitalsDownload from "./HospitalsDownload";
+import Button from "./ui/Button";
 
 type MenuState = {
   row: number;
@@ -42,6 +44,7 @@ export default function HospitalComponent({
   };
   const [columnFilters, setColumnFilters] = React.useState<ColumnFilters>({});
   const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
+  const [isFiltersOpen, setIsFiltersOpen] = React.useState(false);
 
   const openMenu = (row: number, e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -152,11 +155,14 @@ export default function HospitalComponent({
       {/* Hospital */}
       <NavList
         onAdd={() => console.log("Hospital added")}
+        onOpen={() => setIsFiltersOpen(true)}
         searchPlaceholder="Search..."
-        addLabel="Hospital"
+        addLabel="New Hospital"
         searchValue={search}
         onSearch={setSearch}
         actions={<HospitalsDownload data={exportData} />}
+        title="Hospitals"
+        subTitle="Manage all registered hospitals."
       />
 
       <div className="flex flex-wrap gap-2 mb-2">
@@ -191,7 +197,108 @@ export default function HospitalComponent({
         )}
       </div>
 
-      <div className="w-full overflow-x-auto min-h-[400px] overflow-auto">
+      {isFiltersOpen && (
+        <div
+          className=" w-full h-screen fixed inset-0 z-30 bg-black/15 md:hidden"
+          onClick={() => setIsFiltersOpen(false)}
+        />
+      )}
+
+      <div
+        className={`
+    z-40 bg-white
+    md:bg-transparent
+    md:relative md:z-0
+    md:flex md:flex-wrap md:gap-2
+    md:p-0 md:shadow-none
+    md:mb-3
+
+    ${isFiltersOpen ? "fixed left-1/2 top-16 -translate-x-1/2 p-3 shadow rounded-md w-[250px]" : "hidden"}
+    md:block
+  `}
+      >
+        <div className=" md:hidden flex justify-between items-center mb-3">
+          <button
+            onClick={() => setIsFiltersOpen(false)}
+            className=" cursor-pointer rounded-full bg-black/5 border hover:bg-black/10"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <p className=" font-semibold">Filters</p>
+          <button
+            onClick={() => setIsFiltersOpen(false)}
+            className=" font-semibold text-blue-600 hover:text-blue-500"
+          >
+            Done
+          </button>
+        </div>
+        <div className=" mb-3 md:mb-0 flex flex-col">
+          <label htmlFor="type" className=" text-sm">
+            Type
+          </label>
+          <select
+            name="type"
+            id="type"
+            className=" text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 pr-2 py-1.5 outline-blue-500"
+          >
+            <option>All</option>
+            <option value="private">Private</option>
+            <option value="public">public</option>
+            <option value="faith based">Faith based</option>
+          </select>
+        </div>
+        <div className=" mb-3 md:mb-0 flex flex-col">
+          <label htmlFor="status" className=" text-sm">
+            Status
+          </label>
+          <select
+            name="status"
+            id="status"
+            className=" text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 pr-2 py-1.5 outline-blue-500"
+          >
+            <option className="py-1.5">All</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+            <option value="Suspended">Suspended</option>
+          </select>
+        </div>
+        <div className=" mb-3 md:mb-0 flex flex-col">
+          <label htmlFor="from" className=" text-sm">
+            Date From
+          </label>
+          <input
+            id="from"
+            name="from"
+            type="date"
+            placeholder="From"
+            className=" text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 py-[5px] outline-blue-500"
+          />
+        </div>
+        <div className=" mb-3 md:mb-0 flex flex-col">
+          <label htmlFor="to" className=" text-sm">
+            Date To
+          </label>
+          <input
+            id="to"
+            name="to"
+            type="date"
+            placeholder="To"
+            className=" text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 py-[5px] outline-blue-500"
+          />
+        </div>
+        <div className=" flex items-end mb-3 md:mb-0">
+          <Button className=" w-full md:w-auto flex justify-center">
+            Clear Filters
+          </Button>
+        </div>
+        <div className=" md:hidden flex items-end">
+          <Button className=" w-full md:w-auto flex justify-center bg-white !text-blue-600 border shadow-sm hover:!bg-black/5">
+            Apply Filters
+          </Button>
+        </div>
+      </div>
+
+      <div className="w-full py-2 pl-2 bg-white overflow-x-auto overflow-auto border shadow-sm rounded-sm">
         <table className="min-w-[900px] w-full border-collapse">
           <thead className="bg-slate-100 sticky top-0 z-10">
             <tr className="border-b border-dashed border-gray-200">

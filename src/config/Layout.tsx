@@ -7,6 +7,7 @@ import NavigationBar from '../components/NavigationBar'
 
 type RouteHandle = {
   title?: string;
+  showSearch?: boolean;
 };
 
 const Layout = () => {
@@ -14,9 +15,16 @@ const Layout = () => {
   const matches = useMatches();
 
   const currentMatch = matches[matches.length - 1];
-  const title =
-  (currentMatch?.handle as RouteHandle | undefined)?.title ||
-  "Default Title";
+  const title = (currentMatch?.handle as RouteHandle | undefined)?.title;
+
+  const handle = currentMatch?.handle as RouteHandle | undefined;
+
+  const onSearch = handle?.showSearch
+    ? (query: string) => {
+        console.log(`Searching ${title} for:`, query);
+        // You can also update page state here or call page-specific API
+      }
+    : undefined;
 
   return (
     <div className=' flex w-full relative'>
@@ -26,6 +34,8 @@ const Layout = () => {
             <NavigationBar 
               title={title}
               onMenuClick={() => setSidebarOpen(true)}
+              showSearch={handle?.showSearch}
+              onSearch={onSearch}
             />
             <Outlet/>
           </div>
