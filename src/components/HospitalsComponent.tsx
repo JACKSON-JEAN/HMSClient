@@ -213,7 +213,7 @@ export default function HospitalComponent({
     md:p-0 md:shadow-none
     md:mb-3
 
-    ${isFiltersOpen ? "fixed left-1/2 top-16 -translate-x-1/2 p-3 shadow rounded-md w-[250px]" : "hidden"}
+    ${isFiltersOpen ? "fixed left-1/2 top-16 -translate-x-1/2 p-3 shadow rounded-md w-[300px]" : "hidden"}
     md:block
   `}
       >
@@ -232,14 +232,14 @@ export default function HospitalComponent({
             Done
           </button>
         </div>
-        <div className=" mb-3 md:mb-0 flex flex-col">
+        <div className=" w-full md:w-auto mb-3 md:mb-0 flex flex-col">
           <label htmlFor="type" className=" text-sm">
             Type
           </label>
           <select
             name="type"
             id="type"
-            className=" text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 pr-2 py-1.5 outline-blue-500"
+            className=" w-full text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 pr-2 py-1.5 outline-blue-500"
           >
             <option>All</option>
             <option value="private">Private</option>
@@ -247,14 +247,14 @@ export default function HospitalComponent({
             <option value="faith based">Faith based</option>
           </select>
         </div>
-        <div className=" mb-3 md:mb-0 flex flex-col">
+        <div className=" w-full md:w-auto mb-3 md:mb-0 flex flex-col">
           <label htmlFor="status" className=" text-sm">
             Status
           </label>
           <select
             name="status"
             id="status"
-            className=" text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 pr-2 py-1.5 outline-blue-500"
+            className=" w-full text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 pr-2 py-1.5 outline-blue-500"
           >
             <option className="py-1.5">All</option>
             <option value="Active">Active</option>
@@ -262,7 +262,7 @@ export default function HospitalComponent({
             <option value="Suspended">Suspended</option>
           </select>
         </div>
-        <div className=" mb-3 md:mb-0 flex flex-col">
+        <div className=" w-full md:w-auto mb-3 md:mb-0 flex flex-col">
           <label htmlFor="from" className=" text-sm">
             Date From
           </label>
@@ -271,10 +271,10 @@ export default function HospitalComponent({
             name="from"
             type="date"
             placeholder="From"
-            className=" text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 py-[5px] outline-blue-500"
+            className=" w-full text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 py-[5px] outline-blue-500"
           />
         </div>
-        <div className=" mb-3 md:mb-0 flex flex-col">
+        <div className=" w-full md:w-auto mb-3 md:mb-0 flex flex-col">
           <label htmlFor="to" className=" text-sm">
             Date To
           </label>
@@ -283,7 +283,7 @@ export default function HospitalComponent({
             name="to"
             type="date"
             placeholder="To"
-            className=" text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 py-[5px] outline-blue-500"
+            className=" w-full text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 py-[5px] outline-blue-500"
           />
         </div>
         <div className=" flex items-end mb-3 md:mb-0">
