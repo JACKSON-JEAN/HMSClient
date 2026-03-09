@@ -1,0 +1,143 @@
+import React, { useState } from "react";
+import CustomTextField from "./ui/CustomTextField";
+import { MenuItem } from "@mui/material";
+
+const AddHospital = ({ onClose }: { onClose: () => void }) => {
+  const [form, setForm] = useState({
+    name: "",
+    type: "",
+    country: "",
+    city: "",
+    address: "",
+    phone: "",
+    email: "",
+    license: "",
+  });
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const submitHandler = (e: React.FormEvent) =>{
+    e.preventDefault()
+    console.log(form)
+  }
+
+  return (
+    <div
+      className=" min-h-screen fixed inset-0 z-30 flex justify-center items-start pt-5 bg-black/30"
+      onClick={onClose}
+    >
+      <form
+      onSubmit={submitHandler}
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white w-[420px] rounded-md shadow-lg"
+      >
+        {/* Header */}
+        <div className="flex justify-between items-center mb-3 bg-teal-600 px-4 py-3 rounded-t-md">
+          <p className="text-lg font-semibold text-white">Add Hospital</p>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-white hover:text-gray-200"
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Fields */}
+        <div className=" p-4 space-y-4">
+          <CustomTextField
+            label="Hospital Name"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+          />
+          <CustomTextField
+            select
+            label="Hospital Type"
+            name="type"
+            value={form.type}
+            onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-input": {
+                padding: "8px 10px", 
+                fontSize: "14px",
+              },
+            }}
+          >
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="Public">Public</MenuItem>
+            <MenuItem value="Private">Private</MenuItem>
+            <MenuItem value="Faith-based">Faith-based</MenuItem>
+          </CustomTextField>
+
+          <div className="grid grid-cols-2 gap-2">
+            <CustomTextField
+              label="Phone"
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+            />
+            <CustomTextField
+              label="Email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <CustomTextField
+              label="Country"
+              name="country"
+              value={form.country}
+              onChange={handleChange}
+            />
+            <CustomTextField
+              label="City"
+              name="city"
+              value={form.city}
+              onChange={handleChange}
+            />
+          </div>
+
+          <CustomTextField
+            label="Physical Address"
+            name="address"
+            value={form.address}
+            onChange={handleChange}
+          />
+          <CustomTextField
+            label="License Number"
+            name="license"
+            value={form.license}
+            onChange={handleChange}
+          />
+          {/* Actions */}
+          <div className="flex justify-end gap-2 mt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 font-medium text-sm border rounded-sm text-teal-600 hover:bg-gray-100"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 font-medium text-sm bg-teal-600 hover:bg-teal-700 text-white rounded-sm "
+            >
+              Save Hospital
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default AddHospital;

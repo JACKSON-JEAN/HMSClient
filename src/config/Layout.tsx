@@ -12,6 +12,7 @@ type RouteHandle = {
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const matches = useMatches();
 
   const currentMatch = matches[matches.length - 1];
@@ -20,11 +21,10 @@ const Layout = () => {
   const handle = currentMatch?.handle as RouteHandle | undefined;
 
   const onSearch = handle?.showSearch
-    ? (query: string) => {
-        console.log(`Searching ${title} for:`, query);
-        // You can also update page state here or call page-specific API
-      }
-    : undefined;
+  ? (query: string) => {
+      setSearchQuery(query);
+    }
+  : undefined;
 
   return (
     <div className=' flex w-full relative'>
@@ -37,7 +37,7 @@ const Layout = () => {
               showSearch={handle?.showSearch}
               onSearch={onSearch}
             />
-            <Outlet/>
+            <Outlet context={{searchQuery}}/>
           </div>
             <Footer/>
         </main>

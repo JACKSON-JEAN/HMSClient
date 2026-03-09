@@ -89,7 +89,7 @@ export const router = createBrowserRouter([
       { path: "visits", handle: {title: "visits", showSearch: true}, element: withSuspense(Visits) },
       { path: "admissions", handle: {title: "admissions", showSearch: true}, element: withSuspense(Admissions) },
       { path: "laboratory", handle: {title: "laboratory", showSearch: true}, element: withSuspense(Laboratory) },
-      { path: "pharmacy", handle: {title: "pharmacy", showSearch: true}, element: withSuspense(Pharmacy) },
+      { path: "pharmacy", handle: {title: "pharmacy"}, element: withSuspense(Pharmacy) },
       { path: "billing", handle: {title: "billing & payments", showSearch: true}, element: withSuspense(Billing) },
       { path: "insurance", handle: {title: "insurance", showSearch: true}, element: withSuspense(Insurance) },
       { path: "inventory", handle: {title: "inventory", showSearch: true}, element: withSuspense(Inventory) },

@@ -1,3 +1,4 @@
+
 export type Hospital = {
   id: string;
   code: string;
@@ -57,3 +58,4 @@ export const hospitals: Hospital[] = [
     enrolledAt: "2025-03-28",
   },
 ];
+

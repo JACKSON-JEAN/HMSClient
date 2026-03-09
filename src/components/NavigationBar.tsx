@@ -47,9 +47,12 @@ const NavigationBar: React.FC<Props> = ({
               onChange={handleInputChange}
               className="w-full text-sm text-gray-700 bg-white border border-gray-300 rounded-sm pl-7 pr-2 py-1.5 outline-blue-500"
             />
-            {
+            {query &&
               <CircleX
-                onClick={() => onSearch?.("")}
+                onClick={() => {
+                  setQuery("");
+                  onSearch?.("")
+                }}
                 size={14}
                 className=" absolute right-2 top-2.5 cursor-pointer text-gray-500"
               />

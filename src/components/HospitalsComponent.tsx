@@ -1,15 +1,12 @@
-import {
-  ChevronLeft,
-  CircleX,
-  EllipsisVertical,
-  Funnel,
-  Pencil,
-} from "lucide-react";
+import { ChevronLeft, CircleX, PencilLine, Trash2 } from "lucide-react";
 import * as React from "react";
 import { Hospital } from "./data/HospitalData";
 import NavList from "./NavList";
 import HospitalsDownload from "./HospitalsDownload";
 import Button from "./ui/Button";
+import AddHospital from "./AddHospital";
+import EditHospital from "./EditHospital";
+import DeleteHospital from "./DeleteHospital";
 
 type MenuState = {
   row: number;
@@ -29,15 +26,16 @@ type FilterKey =
 
 type HospitalComponentProps = {
   hospitals: Hospital[];
+  searchQuery: string;
 };
 
 export default function HospitalComponent({
   hospitals,
+  searchQuery,
 }: HospitalComponentProps) {
   const [menu, setMenu] = React.useState<MenuState>(null);
   const [openFilter, setOpenFilter] = React.useState<FilterKey | null>(null);
   const filterRef = React.useRef<HTMLDivElement | null>(null);
-  const [search, setSearch] = React.useState("");
   type ColumnFilters = Partial<Record<FilterKey, string>> & {
     dateFrom?: string;
     dateTo?: string;
@@ -45,18 +43,21 @@ export default function HospitalComponent({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFilters>({});
   const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
   const [isFiltersOpen, setIsFiltersOpen] = React.useState(false);
+  const [openAddHospital, setOpenAddHospital] = React.useState(false);
+  const [openEditHospital, setOpenEditHospital] = React.useState(false);
+  const [selectedId, setSelectedId] = React.useState<number | null>(null);
+  const [openDeleteHospital, setOpenDeleteHospital] = React.useState(false);
+  const [selectedTitle, setSelectedTitle] = React.useState("");
 
-  const openMenu = (row: number, e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
+  const [debouncedQuery, setDebouncedQuery] = React.useState("");
 
-    const rect = e.currentTarget.getBoundingClientRect();
+  React.useEffect(() =>{
+    const timer = setTimeout(() =>{
+      setDebouncedQuery(searchQuery)
+    }, 300);
 
-    setMenu({
-      row,
-      x: rect.right,
-      y: rect.bottom,
-    });
-  };
+    return () => clearTimeout(timer)
+  }, [searchQuery])
 
   // Close menu on outside click
   React.useEffect(() => {
@@ -71,11 +72,6 @@ export default function HospitalComponent({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [openFilter]);
-
-  //Toggle filter
-  const toggleFilter = (key: FilterKey) => {
-    setOpenFilter((prev) => (prev === key ? null : key));
-  };
 
   React.useEffect(() => {
     const onEsc = (e: KeyboardEvent) => {
@@ -103,10 +99,7 @@ export default function HospitalComponent({
           ? new Date(columnFilters.dateTo)
           : null;
         return (
-          (!search ||
-            Object.values(h).some((val) =>
-              val?.toString().toLowerCase().includes(search.toLowerCase()),
-            )) &&
+          (!debouncedQuery || Object.values(h).some((val) => val?.toString().toLowerCase().includes(debouncedQuery.toLowerCase()))) &&
           (!columnFilters.code ||
             h.code?.toLowerCase().includes(columnFilters.code.toLowerCase())) &&
           (!columnFilters.name ||
@@ -127,7 +120,7 @@ export default function HospitalComponent({
           (!toDate || (enrolledDate && enrolledDate <= toDate))
         );
       }),
-    [hospitals, columnFilters, search],
+    [hospitals, columnFilters, debouncedQuery],
   );
 
   const toggleRow = (id: string) => {
@@ -150,16 +143,40 @@ export default function HospitalComponent({
     return hospitalData.filter((h) => selectedIds.has(h.id));
   }, [hospitalData, selectedIds]);
 
+  const handleSelectEdit = (id: number) => {
+    setOpenEditHospital(true);
+    setSelectedId(id);
+  };
+
+  const handleDelete = (id: number, title: string) => {
+    setSelectedId(id);
+    setSelectedTitle(title);
+    setOpenDeleteHospital(true);
+  };
+
+  const highlightText = (text: string, query: string) => {
+  if (!query) return text;
+
+  const parts = text.split(new RegExp(`(${query})`, "gi"));
+
+  return parts.map((part, index) =>
+    part.toLowerCase() === query.toLowerCase() ? (
+      <span key={index} className="bg-yellow-200 px-0.5 rounded font-medium">
+        {part}
+      </span>
+    ) : (
+      part
+    )
+  );
+};
+
   return (
     <div className=" w-full">
       {/* Hospital */}
       <NavList
-        onAdd={() => console.log("Hospital added")}
+        onAdd={() => setOpenAddHospital(true)}
         onOpen={() => setIsFiltersOpen(true)}
-        searchPlaceholder="Search..."
         addLabel="New Hospital"
-        searchValue={search}
-        onSearch={setSearch}
         actions={<HospitalsDownload data={exportData} />}
         title="Hospitals"
         subTitle="Manage all registered hospitals."
@@ -237,14 +254,21 @@ export default function HospitalComponent({
             Type
           </label>
           <select
+            value={columnFilters.type || ""}
+            onChange={(e) =>
+              setColumnFilters((prev) => ({
+                ...prev,
+                type: e.target.value,
+              }))
+            }
             name="type"
             id="type"
-            className=" w-full text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 pr-2 py-1.5 outline-blue-500"
+            className=" w-full text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 pr-2 py-1.5 outline-teal-600"
           >
-            <option>All</option>
-            <option value="private">Private</option>
-            <option value="public">public</option>
-            <option value="faith based">Faith based</option>
+            <option value="">All</option>
+            <option value="Private">Private</option>
+            <option value="Public">Public</option>
+            <option value="Faith-based">Faith based</option>
           </select>
         </div>
         <div className=" w-full md:w-auto mb-3 md:mb-0 flex flex-col">
@@ -252,11 +276,20 @@ export default function HospitalComponent({
             Status
           </label>
           <select
+            value={columnFilters.status || ""}
+            onChange={(e) =>
+              setColumnFilters((prev) => ({
+                ...prev,
+                status: e.target.value,
+              }))
+            }
             name="status"
             id="status"
-            className=" w-full text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 pr-2 py-1.5 outline-blue-500"
+            className=" w-full text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 pr-2 py-1.5 outline-teal-600"
           >
-            <option className="py-1.5">All</option>
+            <option value="" className="py-1.5">
+              All
+            </option>
             <option value="Active">Active</option>
             <option value="Inactive">Inactive</option>
             <option value="Suspended">Suspended</option>
@@ -270,8 +303,21 @@ export default function HospitalComponent({
             id="from"
             name="from"
             type="date"
+            value={columnFilters.dateFrom || ""}
+            onChange={(e) => {
+              setColumnFilters((prev) => {
+                const next = { ...prev, dateFrom: e.target.value };
+
+                // If "To" is earlier than new "From", clear it
+                if (next.dateTo && next.dateTo < next.dateFrom) {
+                  next.dateTo = "";
+                }
+
+                return next;
+              });
+            }}
             placeholder="From"
-            className=" w-full text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 py-[5px] outline-blue-500"
+            className=" w-full text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 py-[5px] outline-teal-600"
           />
         </div>
         <div className=" w-full md:w-auto mb-3 md:mb-0 flex flex-col">
@@ -282,21 +328,58 @@ export default function HospitalComponent({
             id="to"
             name="to"
             type="date"
+            value={columnFilters.dateTo || ""}
+            min={columnFilters.dateFrom || undefined}
+            onChange={(e) => {
+              setColumnFilters((prev) => {
+                const next = { ...prev, dateTo: e.target.value };
+                if (next.dateFrom && next.dateTo) setOpenFilter(null);
+                return next;
+              });
+            }}
             placeholder="To"
-            className=" w-full text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 py-[5px] outline-blue-500"
+            className=" w-full text-sm text-gray-700 bg-white border border-gray-300 rounded-sm px-2 py-[5px] outline-teal-600"
           />
         </div>
         <div className=" flex items-end mb-3 md:mb-0">
-          <Button className=" w-full md:w-auto flex justify-center">
+          <Button
+            onClick={() => setColumnFilters({})}
+            className=" w-full md:w-auto flex justify-center"
+          >
             Clear Filters
           </Button>
         </div>
         <div className=" md:hidden flex items-end">
-          <Button className=" w-full md:w-auto flex justify-center bg-white !text-blue-600 border shadow-sm hover:!bg-black/5">
+          <Button className=" w-full md:w-auto flex justify-center !bg-white !text-teal-600 border shadow-sm hover:!bg-black/5">
             Apply Filters
           </Button>
         </div>
       </div>
+
+      {openAddHospital && (
+        <AddHospital onClose={() => setOpenAddHospital(false)} />
+      )}
+      {openEditHospital && selectedId && (
+        <EditHospital
+          hospitalId={selectedId}
+          onClose={() => {
+            setOpenEditHospital(false);
+            setSelectedId(null);
+            setMenu(null);
+          }}
+        />
+      )}
+
+      {openDeleteHospital && selectedId && (
+        <DeleteHospital
+          id={selectedId}
+          title={selectedTitle}
+          onClose={() => {
+            setOpenDeleteHospital(false);
+            setSelectedId(null);
+          }}
+        />
+      )}
 
       <div className="w-full py-2 pl-2 bg-white overflow-x-auto overflow-auto border shadow-sm rounded-sm">
         <table className="min-w-[900px] w-full border-collapse">
@@ -326,136 +409,21 @@ export default function HospitalComponent({
                   <span className=" text-sm text-gray-500 whitespace-nowrap">
                     Code
                   </span>
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleFilter("code");
-                    }}
-                    className={` cursor-pointer hover:text-blue-600 ${openFilter === "code" ? " text-blue-600" : "text-gray-500"}`}
-                  >
-                    <Funnel size={13} fontWeight="bold" />
-                  </span>
                 </div>
-                {openFilter === "code" && (
-                  <div
-                    ref={filterRef}
-                    onMouseDown={(e) => {
-                      e.stopPropagation();
-                    }}
-                    className=" bg-white border shadow-md rounded-sm p-2 absolute top-7 z-10"
-                  >
-                    <input
-                      type="text"
-                      className={`border rounded-sm outline-blue-600 text-sm text-gray-600 p-1 font-normal`}
-                      placeholder="Search code..."
-                      value={columnFilters.code || ""}
-                      onChange={(e) =>
-                        setColumnFilters((prev) => ({
-                          ...prev,
-                          code: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
-                )}
               </th>
               <th className=" relative px-3 py-1 text-start">
                 <div className=" flex items-center gap-3">
                   <span className=" text-sm text-gray-500 whitespace-nowrap">
                     Hospital Name
                   </span>
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleFilter("name");
-                    }}
-                    className={` cursor-pointer hover:text-blue-600 ${openFilter === "name" ? " text-blue-600" : "text-gray-500"}`}
-                  >
-                    <Funnel size={13} fontWeight="bold" />
-                  </span>
                 </div>
-                {openFilter === "name" && (
-                  <div
-                    ref={filterRef}
-                    onMouseDown={(e) => e.stopPropagation()}
-                    className=" bg-white border shadow-md rounded-sm p-2 absolute top-7 z-10"
-                  >
-                    <input
-                      type="text"
-                      className=" border rounded-sm outline-blue-600 text-sm text-gray-600 p-1 font-normal"
-                      placeholder="Search name..."
-                      value={columnFilters.name || ""}
-                      onChange={(e) =>
-                        setColumnFilters((prev) => ({
-                          ...prev,
-                          name: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
-                )}
               </th>
               <th className=" relative px-3 py-1 text-start">
                 <div className=" flex items-center gap-3">
                   <span className=" text-sm text-gray-500 whitespace-nowrap">
                     Type
                   </span>
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleFilter("type");
-                    }}
-                    className={` cursor-pointer hover:text-blue-600 ${openFilter === "type" ? " text-blue-600" : "text-gray-500"}`}
-                  >
-                    <Funnel size={13} fontWeight="bold" />
-                  </span>
                 </div>
-                {openFilter === "type" && (
-                  <div
-                    ref={filterRef}
-                    onMouseDown={(e) => e.stopPropagation()}
-                    className=" bg-white border shadow-md rounded-sm absolute top-7 z-10"
-                  >
-                    <ul>
-                      <li
-                        onClick={() => {
-                          setColumnFilters((prev) => ({
-                            ...prev,
-                            type: "Faith-based",
-                          }));
-                          setOpenFilter(null);
-                        }}
-                        className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5"
-                      >
-                        Faith based
-                      </li>
-                      <li
-                        onClick={() => {
-                          setColumnFilters((prev) => ({
-                            ...prev,
-                            type: "Public",
-                          }));
-                          setOpenFilter(null);
-                        }}
-                        className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5"
-                      >
-                        Public
-                      </li>
-                      <li
-                        onClick={() => {
-                          setColumnFilters((prev) => ({
-                            ...prev,
-                            type: "Private",
-                          }));
-                          setOpenFilter(null);
-                        }}
-                        className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5"
-                      >
-                        Private
-                      </li>
-                    </ul>
-                  </div>
-                )}
               </th>
 
               <th className=" relative px-3 py-1 text-start">
@@ -463,72 +431,14 @@ export default function HospitalComponent({
                   <span className=" text-sm text-gray-500 whitespace-nowrap">
                     Country
                   </span>
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleFilter("country");
-                    }}
-                    className={` cursor-pointer hover:text-blue-600 ${openFilter === "country" ? " text-blue-600" : "text-gray-500"}`}
-                  >
-                    <Funnel size={13} fontWeight="bold" />
-                  </span>
                 </div>
-                {openFilter === "country" && (
-                  <div
-                    ref={filterRef}
-                    onMouseDown={(e) => e.stopPropagation()}
-                    className=" bg-white border shadow-md rounded-sm p-2 absolute top-7 z-10"
-                  >
-                    <input
-                      type="text"
-                      className=" border rounded-sm outline-blue-600 text-sm text-gray-600 p-1 font-normal"
-                      placeholder="Search country..."
-                      value={columnFilters.country || ""}
-                      onChange={(e) =>
-                        setColumnFilters((prev) => ({
-                          ...prev,
-                          country: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
-                )}
               </th>
               <th className=" relative px-3 py-1 text-start">
                 <div className=" flex items-center gap-3">
                   <span className=" text-sm text-gray-500 whitespace-nowrap">
                     City
                   </span>
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleFilter("city");
-                    }}
-                    className={` cursor-pointer hover:text-blue-600 ${openFilter === "city" ? " text-blue-600" : "text-gray-500"}`}
-                  >
-                    <Funnel size={13} fontWeight="bold" />
-                  </span>
                 </div>
-                {openFilter === "city" && (
-                  <div
-                    ref={filterRef}
-                    onMouseDown={(e) => e.stopPropagation()}
-                    className=" bg-white border shadow-md rounded-sm p-2 absolute top-7 z-10"
-                  >
-                    <input
-                      type="text"
-                      className=" border rounded-sm outline-blue-600 text-sm text-gray-600 p-1 font-normal"
-                      placeholder="Search city..."
-                      value={columnFilters.city || ""}
-                      onChange={(e) =>
-                        setColumnFilters((prev) => ({
-                          ...prev,
-                          city: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
-                )}
               </th>
               <th className=" px-3 py-1 text-start">
                 <span className=" text-sm text-gray-500 whitespace-nowrap">
@@ -551,98 +461,14 @@ export default function HospitalComponent({
                   <span className=" text-sm text-gray-500 whitespace-nowrap">
                     License No
                   </span>
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleFilter("license");
-                    }}
-                    className={` cursor-pointer hover:text-blue-600 ${openFilter === "license" ? " text-blue-600" : "text-gray-500"}`}
-                  >
-                    <Funnel size={13} fontWeight="bold" />
-                  </span>
                 </div>
-                {openFilter === "license" && (
-                  <div
-                    ref={filterRef}
-                    onMouseDown={(e) => e.stopPropagation()}
-                    className=" bg-white border shadow-md rounded-sm p-2 absolute top-7 z-10"
-                  >
-                    <input
-                      type="text"
-                      className=" border rounded-sm outline-blue-600 text-sm text-gray-600 p-1 font-normal"
-                      placeholder="Search license..."
-                      value={columnFilters.license || ""}
-                      onChange={(e) =>
-                        setColumnFilters((prev) => ({
-                          ...prev,
-                          license: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
-                )}
               </th>
               <th className=" relative px-3 py-1 text-start">
                 <div className=" flex items-center gap-3">
                   <span className=" text-sm text-gray-500 whitespace-nowrap">
                     Status
                   </span>
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleFilter("status");
-                    }}
-                    className={` cursor-pointer hover:text-blue-600 ${openFilter === "status" ? " text-blue-600" : "text-gray-500"}`}
-                  >
-                    <Funnel size={13} fontWeight="bold" />
-                  </span>
                 </div>
-                {openFilter === "status" && (
-                  <div
-                    ref={filterRef}
-                    onMouseDown={(e) => e.stopPropagation()}
-                    className=" bg-white border shadow-md rounded-sm absolute top-7 z-10"
-                  >
-                    <ul>
-                      <li
-                        onClick={() => {
-                          setColumnFilters((prev) => ({
-                            ...prev,
-                            status: "Active",
-                          }));
-                          setOpenFilter(null);
-                        }}
-                        className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5"
-                      >
-                        Active
-                      </li>
-                      <li
-                        onClick={() => {
-                          setColumnFilters((prev) => ({
-                            ...prev,
-                            status: "Inactive",
-                          }));
-                          setOpenFilter(null);
-                        }}
-                        className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5"
-                      >
-                        Inactive
-                      </li>
-                      <li
-                        onClick={() => {
-                          setColumnFilters((prev) => ({
-                            ...prev,
-                            status: "Suspended",
-                          }));
-                          setOpenFilter(null);
-                        }}
-                        className=" font-normal whitespace-nowrap px-3 py-1 cursor-pointer border-b hover:bg-black/5"
-                      >
-                        Suspended
-                      </li>
-                    </ul>
-                  </div>
-                )}
               </th>
 
               <th className=" relative px-3 py-1 text-start">
@@ -650,63 +476,7 @@ export default function HospitalComponent({
                   <span className=" text-sm text-gray-500 whitespace-nowrap">
                     Date Enrolled
                   </span>
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleFilter("date");
-                    }}
-                    className={` cursor-pointer hover:text-blue-600 ${openFilter === "date" ? " text-blue-600" : "text-gray-500"}`}
-                  >
-                    <Funnel size={13} fontWeight="bold" />
-                  </span>
                 </div>
-                {openFilter === "date" && (
-                  <div
-                    ref={filterRef}
-                    onMouseDown={(e) => e.stopPropagation()}
-                    className=" bg-white border shadow-md rounded-sm px-2 py-1 absolute top-7 z-10"
-                  >
-                    <label htmlFor="from" className="font-normal">
-                      From:
-                    </label>
-                    <input
-                      id="from"
-                      type="date"
-                      value={columnFilters.dateFrom || ""}
-                      onChange={(e) => {
-                        setColumnFilters((prev) => {
-                          const next = { ...prev, dateFrom: e.target.value };
-
-                          // If "To" is earlier than new "From", clear it
-                          if (next.dateTo && next.dateTo < next.dateFrom) {
-                            next.dateTo = "";
-                          }
-
-                          return next;
-                        });
-                      }}
-                      className="border rounded-sm outline-blue-600 text-sm text-gray-600 p-1 font-normal"
-                    />
-
-                    <label htmlFor="to" className="font-normal">
-                      To:
-                    </label>
-                    <input
-                      id="to"
-                      type="date"
-                      value={columnFilters.dateTo || ""}
-                      min={columnFilters.dateFrom || undefined}
-                      onChange={(e) => {
-                        setColumnFilters((prev) => {
-                          const next = { ...prev, dateTo: e.target.value };
-                          if (next.dateFrom && next.dateTo) setOpenFilter(null);
-                          return next;
-                        });
-                      }}
-                      className=" border rounded-sm outline-blue-600 text-sm text-gray-600 p-1 font-normal"
-                    />
-                  </div>
-                )}
               </th>
 
               {/* Sticky action header */}
@@ -740,37 +510,37 @@ export default function HospitalComponent({
                       {index + 1}
                     </td>
                     <td className=" px-3 py-1 text-sm whitespace-nowrap">
-                      {hospital.code}
+                      {highlightText(hospital.code, debouncedQuery)}
                     </td>
                     <td className="px-3 py-1 text-sm whitespace-nowrap">
-                      {hospital.name}
+                      {highlightText(hospital.name, debouncedQuery)}
                     </td>
                     <td className=" px-3 py-1 text-sm whitespace-nowrap">
-                      {hospital.type}
+                      {highlightText(hospital.type, debouncedQuery)}
                     </td>
                     <td className="px-3 py-1 text-sm whitespace-nowrap">
-                      {hospital.country}
+                      {highlightText(hospital.country, debouncedQuery)}
                     </td>
                     <td className=" px-3 py-1 text-sm whitespace-nowrap">
-                      {hospital.city}
+                      {highlightText(hospital.city, debouncedQuery)}
                     </td>
                     <td className=" px-3 py-1 text-sm whitespace-nowrap">
-                      {hospital.address}
+                      {highlightText(hospital.address, debouncedQuery)}
                     </td>
                     <td className="px-3 py-1 text-sm whitespace-nowrap">
-                      {hospital.phone}
+                      {highlightText(hospital.phone, debouncedQuery)}
                     </td>
                     <td className="px-3 py-1 text-sm whitespace-nowrap">
-                      {hospital.email}
+                      {highlightText(hospital.email, debouncedQuery)}
                     </td>
                     <td className=" px-3 py-1 text-sm whitespace-nowrap">
-                      {hospital.license}
+                      {highlightText(hospital.license, debouncedQuery)}
                     </td>
                     <td className={`px-3 py-1 whitespace-nowrap`}>
                       <span
                         className={`text-xs font-medium border rounded-full px-2 py-0.5 ${hospital.status === "Active" ? "text-green-600 bg-green-100 border-green-500 " : hospital.status === "Inactive" ? "text-black bg-gray-200 border-black" : "text-red-700 bg-red-100 border-red-600"}`}
                       >
-                        {hospital.status}
+                        { highlightText(hospital.status, debouncedQuery)}
                       </span>
                     </td>
                     <td className=" px-3 py-1 text-sm whitespace-nowrap">
@@ -782,12 +552,22 @@ export default function HospitalComponent({
                       className={`sticky right-0 px-3 py-1 text-center whitespace-nowrap ${isHighlighted ? "bg-blue-50" : isEven ? "bg-gray-50" : " bg-white"}
   `}
                     >
-                      <button
-                        onClick={(e) => openMenu(index, e)}
-                        className="text-gray-600 hover:text-black"
-                      >
-                        <EllipsisVertical size={16} />
-                      </button>
+                      <span className=" h-full flex items-center gap-2">
+                        <button
+                          onClick={() =>
+                            handleDelete(Number(hospital.id), hospital.name)
+                          }
+                          className=" p-0.5 rounded-sm shadow-md bg-red-600 text-white hover:bg-red-500"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                        <button
+                          onClick={(e) => handleSelectEdit(Number(hospital.id))}
+                          className=" p-0.5 rounded-sm shadow-md bg-green-600 text-white hover:bg-green-500"
+                        >
+                          <PencilLine size={15} />
+                        </button>
+                      </span>
                     </td>
                   </tr>
                 );
@@ -808,32 +588,6 @@ export default function HospitalComponent({
           </div>
         )}
       </div>
-
-      {/* FLOATING DROPDOWN (OUTSIDE TABLE) */}
-      {menu && (
-        <div
-          style={{
-            position: "fixed",
-            top: menu.y - 65,
-            right: 50,
-          }}
-          className="z-[9999] w-36 bg-white border rounded-sm shadow-lg text-sm"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <button
-            className="w-full flex items-center gap-1 text-left px-3 py-2 border-b text-green-600 hover:bg-green-50"
-            onClick={() => setMenu(null)}
-          >
-            <Pencil size={16} /> <span>Edit Hospital</span>
-          </button>
-          <button
-            className="w-full flex items-center gap-1 text-left px-3 py-2 text-red-600 hover:bg-red-50"
-            onClick={() => setMenu(null)}
-          >
-            <CircleX size={16} /> <span>Delete</span>
-          </button>
-        </div>
-      )}
     </div>
   );
 }
