@@ -95,8 +95,15 @@ const AddPerson = ({ onClose }: { onClose: () => void }) => {
             />
             <div className="flex justify-end gap-2 mt-4">
               <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 font-medium text-sm border rounded-sm text-teal-600 hover:bg-gray-100"
+            >
+              Cancel
+            </button>
+              <button
                 type="submit"
-                className="px-4 py-2 text-sm shadow-md bg-teal-600 hover:bg-teal-700 text-white rounded-sm "
+                className="px-4 py-2 text-sm shadow-md font-medium bg-teal-600 hover:bg-teal-700 text-white rounded-sm "
               >
                 Register Person
               </button>

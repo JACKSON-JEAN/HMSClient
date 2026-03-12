@@ -288,7 +288,7 @@ const PatientsComponent = ({
           </Button>
         </div>
         <div className=" md:hidden flex items-end">
-          <Button className=" w-full md:w-auto flex justify-center !bg-white !text-teal-600 border shadow-sm hover:!bg-black/5">
+          <Button onClick={() => setIsFiltersOpen(false)} className=" w-full md:w-auto flex justify-center !bg-white !text-teal-600 border shadow-sm hover:!bg-black/5">
             Apply Filters
           </Button>
         </div>

@@ -109,7 +109,7 @@ const PatientDetailTabs = () => {
   const totalPending = payments.reduce((sum, p) => sum + p.amountPending, 0);
   return (
     <div className=" w-full bg-white border rounded-sm shadow-sm">
-      <div className="flex overflow-x-auto border-b text-sm">
+      <div className="flex overflow-x-auto border-b text-sm pt-1 pl-1">
         {[
           ["overview", "Overview"],
           ["records", "Visit History"],
@@ -123,7 +123,7 @@ const PatientDetailTabs = () => {
             onClick={() => setActiveTab(key as Tab)}
             className={`px-4 py-3 border-r last:border-r-0 whitespace-nowrap ${
               activeTab === key
-                ? "bg-green-50 text-green-700 font-medium"
+                ? "bg-black/5 text-green-700 font-medium"
                 : "text-gray-600 hover:bg-gray-50"
             }`}
           >
