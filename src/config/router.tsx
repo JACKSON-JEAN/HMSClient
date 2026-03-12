@@ -80,7 +80,7 @@ export const router = createBrowserRouter([
       {
         path: "patients",
         children: [
-          { index: true, handle: {title: "patients list", }, element: withSuspense(Patients) },
+          { index: true, handle: {showSearch: true }, element: withSuspense(Patients) },
           { path: ":patientId", handle: { title: "Patient Details", showSearch: true}, element: withSuspense(PatientDetails) },
         ],
       },

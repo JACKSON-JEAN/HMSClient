@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useMatches } from 'react-router-dom'
+import { useLocation, useMatches } from 'react-router-dom'
 import Sidemenu from '../components/Sidemenu'
 import { Outlet } from 'react-router-dom'
 import Footer from '../components/Footer'
@@ -26,6 +26,12 @@ const Layout = () => {
     }
   : undefined;
 
+  const location = useLocation()
+
+  React.useEffect(() =>{
+    setSearchQuery("")
+  }, [location.pathname])
+
   return (
     <div className=' flex w-full relative'>
         <Sidemenu open={sidebarOpen} onClose={() => setSidebarOpen(false)}/>
@@ -35,6 +41,7 @@ const Layout = () => {
               title={title}
               onMenuClick={() => setSidebarOpen(true)}
               showSearch={handle?.showSearch}
+              query={searchQuery}
               onSearch={onSearch}
             />
             <Outlet context={{searchQuery}}/>

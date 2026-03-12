@@ -9,6 +9,7 @@ type LayoutContext = {
 
 const Hospitals = () => {
   const {searchQuery} = useOutletContext<LayoutContext>();
+  
   return (
     <Container>
       <div className="w-full">

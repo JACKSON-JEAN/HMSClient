@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import CustomTextField from "./ui/CustomTextField";
 import { MenuItem } from "@mui/material";
+import { createPortal } from "react-dom";
 
 const AddHospital = ({ onClose }: { onClose: () => void }) => {
   const [form, setForm] = useState({
@@ -27,9 +28,9 @@ const AddHospital = ({ onClose }: { onClose: () => void }) => {
     console.log(form)
   }
 
-  return (
+  return createPortal (
     <div
-      className=" min-h-screen fixed inset-0 z-30 flex justify-center items-start pt-5 bg-black/30"
+      className=" fixed inset-0 z-30 flex justify-center items-start pt-14 bg-black/30"
       onClick={onClose}
     >
       <form
@@ -131,12 +132,13 @@ const AddHospital = ({ onClose }: { onClose: () => void }) => {
               type="submit"
               className="px-4 py-2 font-medium text-sm bg-teal-600 hover:bg-teal-700 text-white rounded-sm "
             >
-              Save Hospital
+              Add Hospital
             </button>
           </div>
         </div>
       </form>
-    </div>
+    </div>,
+    document.body
   );
 };
 

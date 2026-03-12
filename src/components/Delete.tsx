@@ -1,5 +1,6 @@
 import { Trash2 } from "lucide-react";
 import React from "react";
+import { createPortal } from "react-dom";
 
 interface DeleteProps {
   onClose: () => void;
@@ -13,10 +14,10 @@ const Delete: React.FC<DeleteProps> = ({ onClose, onConfirm, title }) => {
     onClose();
   };
   
-  return (
+  return createPortal (
     <div
       onClick={onClose}
-      className="min-h-screen fixed inset-0 z-30 flex justify-center items-start pt-20 bg-black/30"
+      className=" fixed inset-0 z-30 flex justify-center items-start pt-24 bg-black/30"
     >
       <div
         onClick={(e) => e.stopPropagation()}
@@ -50,7 +51,8 @@ const Delete: React.FC<DeleteProps> = ({ onClose, onConfirm, title }) => {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

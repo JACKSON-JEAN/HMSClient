@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import CustomTextField from "./ui/CustomTextField";
 import { MenuItem } from "@mui/material";
+import { createPortal } from "react-dom";
 
 interface EditHospitalProps {
     onClose: () => void,
@@ -34,9 +35,9 @@ const EditHospital: React.FC<EditHospitalProps> = ({ onClose, hospitalId }) => {
     console.log(form);
   };
 
-  return (
+  return createPortal (
     <div
-      className=" min-h-screen fixed inset-0 z-30 flex justify-center items-start pt-5 bg-black/30"
+      className=" fixed inset-0 z-30 flex justify-center items-start pt-14 bg-black/30"
       onClick={onClose}
     >
       <form
@@ -153,7 +154,8 @@ const EditHospital: React.FC<EditHospitalProps> = ({ onClose, hospitalId }) => {
           </div>
         </div>
       </form>
-    </div>
+    </div>,
+    document.body
   );
 };
 

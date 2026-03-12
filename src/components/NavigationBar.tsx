@@ -6,6 +6,7 @@ type Props = {
   onMenuClick: () => void;
   title?: string;
   showSearch?: boolean;
+  query?: string;
   onSearch?: (query: string) => void;
 };
 
@@ -13,14 +14,9 @@ const NavigationBar: React.FC<Props> = ({
   onMenuClick,
   title,
   showSearch,
+  query,
   onSearch,
 }) => {
-  const [query, setQuery] = React.useState("");
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-    onSearch?.(e.target.value); // call the page-specific search handler
-  };
 
   return (
     <nav className=" sticky top-0 z-10 h-[50px] bg-white w-full border-b flex items-center justify-between px-4">
@@ -43,14 +39,13 @@ const NavigationBar: React.FC<Props> = ({
             <input
               type="text"
               placeholder="Search..."
-              value={query}
-              onChange={handleInputChange}
+              value={query || ""}
+              onChange={(e) => onSearch?.(e.target.value)}
               className="w-full text-sm text-gray-700 bg-white border border-gray-300 rounded-sm pl-7 pr-2 py-1.5 outline-blue-500"
             />
             {query &&
               <CircleX
                 onClick={() => {
-                  setQuery("");
                   onSearch?.("")
                 }}
                 size={14}

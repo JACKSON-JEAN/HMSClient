@@ -51,13 +51,13 @@ export default function HospitalComponent({
 
   const [debouncedQuery, setDebouncedQuery] = React.useState("");
 
-  React.useEffect(() =>{
-    const timer = setTimeout(() =>{
-      setDebouncedQuery(searchQuery)
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
     }, 300);
 
-    return () => clearTimeout(timer)
-  }, [searchQuery])
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   // Close menu on outside click
   React.useEffect(() => {
@@ -99,7 +99,13 @@ export default function HospitalComponent({
           ? new Date(columnFilters.dateTo)
           : null;
         return (
-          (!debouncedQuery || Object.values(h).some((val) => val?.toString().toLowerCase().includes(debouncedQuery.toLowerCase()))) &&
+          (!debouncedQuery ||
+            Object.values(h).some((val) =>
+              val
+                ?.toString()
+                .toLowerCase()
+                .includes(debouncedQuery.toLowerCase()),
+            )) &&
           (!columnFilters.code ||
             h.code?.toLowerCase().includes(columnFilters.code.toLowerCase())) &&
           (!columnFilters.name ||
@@ -155,20 +161,20 @@ export default function HospitalComponent({
   };
 
   const highlightText = (text: string, query: string) => {
-  if (!query) return text;
+    if (!query) return text;
 
-  const parts = text.split(new RegExp(`(${query})`, "gi"));
+    const parts = text.split(new RegExp(`(${query})`, "gi"));
 
-  return parts.map((part, index) =>
-    part.toLowerCase() === query.toLowerCase() ? (
-      <span key={index} className="bg-yellow-200 px-0.5 rounded font-medium">
-        {part}
-      </span>
-    ) : (
-      part
-    )
-  );
-};
+    return parts.map((part, index) =>
+      part.toLowerCase() === query.toLowerCase() ? (
+        <span key={index} className="bg-yellow-200 px-0.5 rounded font-medium">
+          {part}
+        </span>
+      ) : (
+        part
+      ),
+    );
+  };
 
   return (
     <div className=" w-full">
@@ -540,7 +546,7 @@ export default function HospitalComponent({
                       <span
                         className={`text-xs font-medium border rounded-full px-2 py-0.5 ${hospital.status === "Active" ? "text-green-600 bg-green-100 border-green-500 " : hospital.status === "Inactive" ? "text-black bg-gray-200 border-black" : "text-red-700 bg-red-100 border-red-600"}`}
                       >
-                        { highlightText(hospital.status, debouncedQuery)}
+                        {highlightText(hospital.status, debouncedQuery)}
                       </span>
                     </td>
                     <td className=" px-3 py-1 text-sm whitespace-nowrap">
@@ -552,7 +558,7 @@ export default function HospitalComponent({
                       className={`sticky right-0 px-3 py-1 text-center whitespace-nowrap ${isHighlighted ? "bg-blue-50" : isEven ? "bg-gray-50" : " bg-white"}
   `}
                     >
-                      <span className=" h-full flex items-center gap-2">
+                      <span className=" h-full flex items-center jus gap-2">
                         <button
                           onClick={() =>
                             handleDelete(Number(hospital.id), hospital.name)
